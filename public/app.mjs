@@ -467,6 +467,21 @@ function reset() {
   $('status').textContent = '';
   $('file').value = '';
 }
+async function readPageItems(page) {
+  // Safari may support stream readers without supporting async iteration of streams.
+  const reader = page.streamTextContent().getReader();
+  const items = [];
+  try {
+    while (true) {
+      const {done,value} = await reader.read();
+      if (done) return items;
+      items.push(...value.items);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
+
 $('file').addEventListener('change',async event=>{
   const file = event.target.files[0];
   if (!file) return;
@@ -492,8 +507,9 @@ $('file').addEventListener('change',async event=>{
       const pages = [];
       for (let page = 1; page <= pdf.numPages && attempt === generation; page++) {
         $('status').textContent = 'Reading page '+page+' of '+pdf.numPages+'…';
-        const content = await (await pdf.getPage(page)).getTextContent();
-        pages.push(pageLines(content.items));
+        const pdfPage = await pdf.getPage(page);
+        const items = pdf.isPureXfa ? (await pdfPage.getTextContent()).items : await readPageItems(pdfPage);
+        pages.push(pageLines(items));
       }
       return pages;
     } finally {
