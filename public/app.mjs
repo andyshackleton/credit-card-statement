@@ -456,7 +456,8 @@ function show(data, sample = false) {
   renderBalance($('balance-breakdown'),data);
   renderPayoff($('payoff'),data,sample);
   $('result').hidden = false;
-  $('result-title').focus();
+  $('result-title').focus({preventScroll:true});
+  $('result').scrollIntoView({block:'start',behavior:'instant'});
 }
 function reset() {
   generation++;
@@ -468,23 +469,28 @@ function reset() {
 }
 $('file').addEventListener('change',async event=>{
   const file = event.target.files[0];
+  if (!file) return;
   reset();
   const attempt = generation;
-  if (!file) return;
   if (file.size > 15*1024*1024) {
     $('status').textContent = 'Choose a PDF smaller than 15 MB.';
     return;
   }
-  $('status').textContent = 'Reading the statement on your device…';
+  $('status').textContent = 'Opening your PDF on this device…';
   let task;
   try {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    if (attempt !== generation) return;
     const pdfjs = await import('./pdf.min.mjs');
+    if (attempt !== generation) return;
     pdfjs.GlobalWorkerOptions.workerSrc = new URL('./pdf.worker.min.mjs',import.meta.url).href;
-    task = pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer()),isEvalSupported:false,useWorkerFetch:false});
+    task = pdfjs.getDocument({data:bytes,isEvalSupported:false,useWorkerFetch:false});
     const pdf = await task.promise;
+    if (attempt !== generation) return;
     if (pdf.numPages > 30) throw new Error('limit');
     const pages = [];
     for (let page = 1; page <= pdf.numPages && attempt === generation; page++) {
+      $('status').textContent = 'Reading page '+page+' of '+pdf.numPages+'…';
       const content = await (await pdf.getPage(page)).getTextContent();
       pages.push(pageLines(content.items));
     }
@@ -494,13 +500,17 @@ $('file').addEventListener('change',async event=>{
       $('status').textContent = 'No supported statement fields were found. Try the original PDF from your card provider. Scans and some statement layouts are unsupported.';
       return;
     }
-    $('status').textContent = '';
     show(result);
+    $('status').textContent = 'PDF read. Your report is ready below.';
   } catch (error) {
     if (attempt === generation) $('status').textContent = error.message === 'limit'
       ? 'Choose a statement with 30 pages or fewer.'
       : error.name === 'PasswordException' ? 'This PDF is password protected. Choose an unlocked copy.'
-      : 'This file could not be read. Try downloading the original PDF again.';
+      : error.name === 'NotFoundError' || error.name === 'NotReadableError'
+        ? 'Your browser could not open that file. Save a copy to your device and select it again.'
+        : error.name === 'InvalidPDFException'
+          ? 'This file is not a readable PDF. Choose the original PDF from your card provider.'
+          : 'This file could not be read. Try downloading the original PDF again.';
   } finally {
     if (task) await task.destroy().catch(()=>{});
   }
