@@ -1,0 +1,9 @@
+.statement-guide {max-width:760px;margin:0 auto;padding:clamp(32px,7vw,80px) 0}
+.statement-guide h1 {font-size:clamp(34px,5vw,56px)}
+.statement-guide h2 {margin-top:30px}
+.statement-guide li + li {margin-top:10px}
+.statement-guide dt {font-weight:bold}
+.statement-guide dd {margin:0 0 14px;color:var(--muted)}
+.guide-cta {margin:32px 0;padding:24px;background:var(--soft);border-radius:12px}
+.guide-cta h2 {margin-top:0}
+.statement-guide nav {border-top:1px solid var(--line);margin-top:32px}
