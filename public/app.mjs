@@ -473,46 +473,82 @@ $('file').addEventListener('change',async event=>{
   reset();
   const attempt = generation;
   if (file.size > 15*1024*1024) {
-    $('status').textContent = 'Choose a PDF smaller than 15 MB.';
+    $('status').textContent = 'Choose a PDF no larger than 15 MB.';
     return;
   }
   $('status').textContent = 'Opening your PDF on this device…';
-  let task;
+  let stage = 'FILE';
+  async function readPages(pdfjs,bytes,compatibility = false) {
+    stage = 'OPEN';
+    const task = pdfjs.getDocument({
+      data:bytes,isEvalSupported:false,useWorkerFetch:false,
+      ...(compatibility ? {isOffscreenCanvasSupported:false,isImageDecoderSupported:false,useWasm:false} : {})
+    });
+    try {
+      const pdf = await task.promise;
+      if (attempt !== generation) return [];
+      if (pdf.numPages > 30) throw new Error('limit');
+      stage = 'TEXT';
+      const pages = [];
+      for (let page = 1; page <= pdf.numPages && attempt === generation; page++) {
+        $('status').textContent = 'Reading page '+page+' of '+pdf.numPages+'…';
+        const content = await (await pdf.getPage(page)).getTextContent();
+        pages.push(pageLines(content.items));
+      }
+      return pages;
+    } finally {
+      await task.destroy().catch(()=>{});
+    }
+  }
+
   try {
     const bytes = new Uint8Array(await file.arrayBuffer());
     if (attempt !== generation) return;
+    stage = 'ENGINE';
     const pdfjs = await import('./pdf.min.mjs');
     if (attempt !== generation) return;
     pdfjs.GlobalWorkerOptions.workerSrc = new URL('./pdf.worker.min.mjs',import.meta.url).href;
-    task = pdfjs.getDocument({data:bytes,isEvalSupported:false,useWorkerFetch:false});
-    const pdf = await task.promise;
-    if (attempt !== generation) return;
-    if (pdf.numPages > 30) throw new Error('limit');
-    const pages = [];
-    for (let page = 1; page <= pdf.numPages && attempt === generation; page++) {
-      $('status').textContent = 'Reading page '+page+' of '+pdf.numPages+'…';
-      const content = await (await pdf.getPage(page)).getTextContent();
-      pages.push(pageLines(content.items));
+
+    let pages;
+    try {
+      pages = await readPages(pdfjs,bytes.slice());
+    } catch (error) {
+      if (attempt !== generation) return;
+      if (error.message === 'limit' || ['PasswordException','InvalidPDFException'].includes(error.name)) throw error;
+      $('status').textContent = 'Trying the PDF reader in compatibility mode…';
+      stage = 'ENGINE';
+      // Loading the worker module here lets PDF.js use its same-thread fallback.
+      await import('./pdf.worker.min.mjs');
+      if (attempt !== generation) return;
+      pages = await readPages(pdfjs,bytes,true);
     }
     if (attempt !== generation) return;
+    if (!pages.some(lines=>lines.length)) {
+      $('status').textContent = 'No readable text was found. If this is a scan, choose the original text-based PDF from your card provider.';
+      return;
+    }
+    stage = 'REPORT';
     const result = parseStatement(pages);
     if (!Object.values(result.metrics).some(Boolean) && !result.rates.length && !result.conflicts.length) {
-      $('status').textContent = 'No supported statement fields were found. Try the original PDF from your card provider. Scans and some statement layouts are unsupported.';
+      $('status').textContent = 'The PDF opened, but no supported statement fields were found. This statement layout may not be supported yet.';
       return;
     }
     show(result);
     $('status').textContent = 'PDF read. Your report is ready below.';
   } catch (error) {
-    if (attempt === generation) $('status').textContent = error.message === 'limit'
+    if (attempt !== generation) return;
+    const failure = {
+      FILE:'Your browser could not open that file. Save a copy to your device and select it again.',
+      ENGINE:'The PDF reader could not start in this browser. Try opening Statement Check directly in Safari or Chrome.',
+      OPEN:'The reader could not open this PDF.',
+      TEXT:'The PDF opened, but the reader could not extract its text.',
+      REPORT:'The PDF opened, but Statement Check could not build the report.'
+    };
+    $('status').textContent = error.message === 'limit'
       ? 'Choose a statement with 30 pages or fewer.'
       : error.name === 'PasswordException' ? 'This PDF is password protected. Choose an unlocked copy.'
-      : error.name === 'NotFoundError' || error.name === 'NotReadableError'
-        ? 'Your browser could not open that file. Save a copy to your device and select it again.'
-        : error.name === 'InvalidPDFException'
-          ? 'This file is not a readable PDF. Choose the original PDF from your card provider.'
-          : 'This file could not be read. Try downloading the original PDF again.';
-  } finally {
-    if (task) await task.destroy().catch(()=>{});
+        : error.name === 'InvalidPDFException' ? 'This file is not a readable PDF. Choose the original PDF from your card provider.'
+          : failure[stage]+' (PDF-'+stage+')';
   }
 });
 for (const button of document.querySelectorAll('[data-open-sample]')) {
