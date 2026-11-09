@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://credit-card-statement.vercel.app/sitemap.xml
+Sitemap: https://creditcardstatement.co.uk/sitemap.xml
