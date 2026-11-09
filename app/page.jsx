@@ -30,6 +30,7 @@ export default function Home() {
                   <input type="file" id="file" accept=".pdf,application/pdf" hidden />
                   <p>Text-based PDFs · up to 15 MB and 30 pages</p>
                   <a href="#how-it-works">How do I find my statement?</a>
+                  <p><strong>Paying off more than one credit card?</strong> Start with one statement, then add the others. See which card could clear first and how much interest you could pay with the same monthly budget.</p>
                   <p id="status" role="status" />
                 </div>
               </div>
