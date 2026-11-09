@@ -58,7 +58,6 @@ export default function Home() {
                   <div>
                     <h2>Explore what’s next</h2>
                     <p>See how a different payment could change your payoff date and interest.</p>
-                    <button className="hero-benefit-action" type="button" data-open-sample="" data-sample-payoff="">Try the repayment comparison</button>
                   </div>
                 </div>
               </aside>
