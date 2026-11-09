@@ -433,14 +433,14 @@ body:has(#sample-dialog[open]) {overflow:hidden}
 .payoff-saving-item strong {font-size:clamp(1.2rem,3vw,1.65rem)}
 
 #result .report-section-heading[data-step] {
-  background:linear-gradient(105deg,var(--report-heading-shade,#eff0f2),#fff);
+  background:linear-gradient(105deg,var(--report-heading-shade,#fafafa),#fff 70%);
   border-left-color:#62666e;color:#22252b;
 }
 #result .report-section-heading[data-step="02"] {
-  --report-heading-shade:#e7e9ec;
+  --report-heading-shade:#f7f7f8;
 }
 #result .report-section-heading[data-step="03"] {
-  --report-heading-shade:#dfe2e6;
+  --report-heading-shade:#f4f5f6;
 }
 #result .report-section-heading[data-step] .report-section-number {
   background:linear-gradient(140deg,#454951,#24272d);
