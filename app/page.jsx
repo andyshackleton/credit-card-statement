@@ -90,7 +90,11 @@ export default function Home() {
                 </div>
               </details>
             </section>
-            <dialog id="sample-dialog" aria-labelledby="result-title" />
+            <dialog id="sample-dialog" aria-labelledby="result-title">
+              <div className="sample-dialog-toolbar">
+                <button type="button" className="report-button secondary" id="close-sample">Close sample</button>
+              </div>
+            </dialog>
             <section className="lc-trust" id="examples" aria-labelledby="case-title">
               <div className="report-preview-intro">
                 <p className="report-eyebrow">Sample report</p>
