@@ -47,13 +47,13 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 .greenlight-inline{background:#f1f8f4;color:#152b36;padding:20px}.greenlight-inline .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:center}.greenlight-inline h1{font-size:clamp(19px,2.4vw,34px);line-height:1.12;margin:8px 0}.greenlight-inline em,.greenlight-inline .eyebrow{color:#087f78}.greenlight-inline .eyebrow,.greenlight-inline .fine,.greenlight-inline figcaption{font-size:9px}.greenlight-inline p{font-size:11px;margin:6px 0}.greenlight-inline figure{margin:0}.greenlight-inline img{display:block;width:100%;height:auto}.greenlight-inline .btn{display:inline-block;font-size:10px;color:white;background:#087f78;padding:6px 8px;border-radius:5px}.case-image{margin:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:white}.case-image img{display:block;width:100%;height:auto}.case-image figcaption{padding:9px 14px;font-size:12px;color:var(--muted)}.hero-case-image{margin-top:10px}.case-feedback{margin-top:18px;padding:16px;background:var(--soft);border-radius:10px}.case-feedback h3,.case-feedback p{margin:0 0 6px}.case-feedback small{color:var(--muted)}.instructor-quote{margin:0}.instructor-quote blockquote{margin:12px 0;font-size:1.05rem;line-height:1.6;color:var(--ink)}.instructor-quote small{display:block;margin-top:3px}.hero-service{padding:clamp(20px,4vw,42px);border:1px solid var(--line);border-radius:16px;background:var(--soft)}.hero-service h2{margin:0 0 16px}.hero-service ul{padding-left:20px;margin:0}.hero-service li+li{margin-top:8px}.hero-service>p:last-child{margin-bottom:0;color:var(--green);font-weight:700}.lc-home .case-study{margin-top:0}.case-intro{grid-column:1/-1;max-width:68ch}.case-intro h2{margin:8px 0 12px}.case-intro p:last-child{margin-bottom:0}#request label{display:block;font-weight:bold}#request input{width:100%;padding:8px;margin-top:5px;border:1px solid var(--line);border-radius:6px}.lc-home .lc-hero{grid-template-columns:1fr}.lc-hero-copy{max-width:720px}
 /* Alternate the content bands in reading order below the hero. */
-.lc-home > :is(#why-yotion,#service,#examples,#customer-story,#how-it-works,#ownership,#questions){
+.lc-home > :is(#examples,#how-it-works,#ownership,#questions,#guides){
   margin:0;padding:clamp(28px,5vw,56px);border:0;border-radius:0;background:transparent
 }
-.lc-home > :is(#why-yotion,#examples,#how-it-works,#questions){
+.lc-home > :is(#examples,#ownership,#guides){
   background:var(--soft);border-radius:12px
 }
-.lc-home > :is(#why-yotion,#examples,#how-it-works,#questions) h2 em{color:inherit;font:inherit}
+.lc-home > :is(#examples,#ownership,#guides) h2 em{color:inherit;font:inherit}
 .lc-home > #examples{row-gap:24px}
 
 .example-features{display:grid;gap:10px}.example-features article{display:flex;gap:14px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:14px}.example-features article span{color:var(--green);font-weight:bold;font-size:12px}.example-features h3{margin:0 0 3px}.example-features p{margin:0}
@@ -64,7 +64,7 @@
 #ownership article{border:1px solid var(--line);border-radius:12px;padding:clamp(16px,2.4vw,24px);background:var(--paper);overflow-wrap:anywhere}
 #ownership article h3{font:22px/1.3 Georgia,serif;margin:0 0 10px}
 #ownership article p{margin:0;font-size:14px}
-.lc-home > :is(#why-yotion,#service,#examples,#customer-story,#how-it-works,#ownership,#questions) + section{margin-top:clamp(12px,2vw,24px)}
+.lc-home > :is(#examples,#how-it-works,#ownership,#questions,#guides) + section{margin-top:clamp(12px,2vw,24px)}
 .lc-home .lc-trust > *{min-width:0}
 .lc-home .case-image{align-self:start}
 #lycon-answers form,#request form{margin-top:18px}
