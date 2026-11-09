@@ -147,10 +147,13 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
   .hero-report-page {padding:clamp(14px,1.8vw,22px)}
   .hero-report-header strong {display:block;font-size:clamp(17px,1.8vw,23px);line-height:1.2}
   .hero-report-label {display:block;color:var(--green);font-size:11px;font-weight:750;margin-bottom:4px}
-  .hero-report-section {margin:.65rem 0 .3rem;font-size:11px;font-weight:750}
+  .hero-report-section {
+    margin:.6rem 0 .3rem;padding:4px 6px;border-left:2px solid #71388e;border-radius:4px;
+    background:#f2e8f7;color:#482a5e;font-size:11px;font-weight:750;line-height:1.25;
+  }
   .hero-mini-position {
     display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:stretch;gap:8px;
-    padding:9px;border-radius:9px;background:linear-gradient(120deg,#302047,#4c2864);color:white;
+    padding:9px;border:1px solid #e2d4eb;border-radius:9px;background:#f5eef9;color:#302047;
   }
   .hero-mini-position > div {min-width:0}
   .hero-mini-position span {display:block;font-size:9px;line-height:1.25}
@@ -158,7 +161,7 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
   .hero-mini-position .hero-mini-change {
     display:inline-block;margin-top:4px;padding:2px 5px;border-radius:999px;background:#ffe7eb;color:#862a3c;font-weight:700;
   }
-  .hero-mini-due {padding:6px;border-radius:6px;background:#f7effb;color:#342048}
+  .hero-mini-due {padding:6px;border:1px solid #e7daee;border-radius:6px;background:#fff;color:#342048}
   .hero-mini-due strong {font-size:14px}
   .hero-mini-pair {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:0}
   .hero-mini-pair > div {min-width:0;padding:5px 7px;border-radius:6px}
@@ -167,6 +170,14 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
   .hero-mini-added {background:#fcf2eb;color:#763823}
   .hero-mini-deducted {background:#edf7f2;color:#18584c}
   .hero-mini-current {background:#f7effb;color:#4c2864}
+  .hero-mini-costs {margin-top:5px}
+  .hero-mini-costs > div {border:1px solid var(--line)}
+  .hero-mini-insight {font-size:10px;color:var(--ink);line-height:1.35}
+  .hero-mini-saving {
+    display:flex;flex-wrap:wrap;gap:2px 8px;margin-top:6px;padding:5px 7px;
+    border-left:2px solid #14705b;border-radius:4px;background:#f1f8f4;color:#174f43;font-size:10px;
+  }
+  .hero-phone .hero-mini-insight,.hero-phone .hero-mini-saving {font-size:8px}
   .hero-report figcaption {margin-top:15px;font-size:12px;color:var(--muted)}
   .hero-report figcaption a {color:var(--green);font-weight:700}
   .lc-home .lc-hero .hero-report :focus-visible {outline-color:var(--green)}
