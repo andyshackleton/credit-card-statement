@@ -436,9 +436,12 @@ function renderRates(container,data) {
   }
 }
 
-function show(data, sample = false) {
+function show(data, sample = false, scroll = true) {
   current = {sample,...data};
   $('result-type').textContent = sample ? 'FICTIONAL SAMPLE' : 'FROM YOUR PDF';
+  $('result-title').textContent = sample ? 'Sample statement report' : 'Your statement, explained';
+  $('sample-note').hidden = !sample;
+  $('clear').textContent = sample ? 'Close sample' : 'Close report';
   const issues = $('statement-issues');
   issues.hidden = data.conflicts.length === 0;
   issues.textContent = data.conflicts.length ? 'Check your statement. Different values were found for '+data.conflicts.map(key=>({
@@ -456,10 +459,16 @@ function show(data, sample = false) {
   renderBalance($('balance-breakdown'),data);
   renderPayoff($('payoff'),data,sample);
   $('result').hidden = false;
-  $('result-title').focus({preventScroll:true});
-  $('result').scrollIntoView({block:'start',behavior:'instant'});
+  if (scroll) {
+    $('result-title').focus({preventScroll:true});
+    $('result').scrollIntoView({block:'start',behavior:'instant'});
+  }
 }
+let sampleOpener = null;
+let previousReport = null;
 function reset() {
+  sampleOpener = null;
+  previousReport = null;
   generation++;
   current = null;
   $('result').hidden = true;
@@ -567,10 +576,27 @@ $('file').addEventListener('change',async event=>{
           : failure[stage]+' (PDF-'+stage+')';
   }
 });
-for (const button of document.querySelectorAll('[data-open-sample]')) {
-  button.onclick = ()=>{reset();show(example,true);};
+for (const trigger of document.querySelectorAll('[data-open-sample]')) {
+  trigger.addEventListener('click',event=>{
+    if (trigger.matches('a') && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
+    event.preventDefault();
+    const report = current?.sample ? previousReport : current;
+    reset();
+    sampleOpener = trigger;
+    previousReport = report;
+    show(example,true);
+  });
 }
-$('clear').onclick = ()=>{reset();$('choose-file').focus();};
+$('clear').onclick = ()=>{
+  const opener = sampleOpener;
+  const report = previousReport;
+  reset();
+  if (report) show(report,false,false);
+  // The mobile menu can close when its sample link is selected.
+  const target = opener?.getClientRects().length ? opener : $('choose-file');
+  target.focus({preventScroll:true});
+  target.scrollIntoView({block:'center',behavior:'instant'});
+};
 $('print').onclick = ()=>window.print();
 let detailsWereOpen = false;
 window.addEventListener('beforeprint',()=>{

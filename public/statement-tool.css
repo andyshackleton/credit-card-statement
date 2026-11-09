@@ -226,7 +226,10 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
 .report-known {margin-bottom:.5rem}
 .report-details {margin-block:1rem;border-top:1px solid var(--line);padding-top:.65rem}
 .report-details summary {width:fit-content;font-weight:650;cursor:pointer}
-.report-clear {margin-top:.35rem}
+.report-result-header {display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.75rem 1rem;margin-bottom:1rem}
+.report-result-header h2 {margin-bottom:.25rem}
+.report-sample-note {margin:.35rem 0 0;color:var(--muted)}
+.report-clear {flex:none}
 .payoff-planner {
   min-width:0;margin:0;padding:clamp(.65rem,2.5vw,1.2rem);
   border:1px solid #e4d5ed;border-radius:14px;background:#f6effa;
