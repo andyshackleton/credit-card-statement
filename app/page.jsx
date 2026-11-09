@@ -1,5 +1,34 @@
 import Script from 'next/script';
 
+function HeroReportSummary() {
+  return (
+    <>
+      <div className="hero-report-section">01 · Balance and next payment</div>
+      <div className="hero-mini-position">
+        <div><span>Statement balance</span><strong>£2,400.00</strong><span className="hero-mini-change">↑ £250.00 higher</span></div>
+        <div className="hero-mini-due"><span>Minimum payment</span><strong>£62.00</strong><span>Due 25 November</span></div>
+      </div>
+      <dl className="hero-mini-pair hero-mini-costs">
+        <div><dt>Interest charged</dt><dd>£29.40</dd></div>
+        <div><dt>Fees charged</dt><dd>£0.00</dd></div>
+      </dl>
+      <div className="hero-report-section">02 · How your balance changed</div>
+      <dl className="hero-mini-pair">
+        <div className="hero-mini-added"><dt>Added to balance</dt><dd>+£625.00</dd></div>
+        <div className="hero-mini-deducted"><dt>Taken off balance</dt><dd>−£375.00</dd></div>
+      </dl>
+      <div className="hero-report-section">Statement insights</div>
+      <div className="hero-mini-insight">You paid £350, but your balance rose by £250.</div>
+      <div className="hero-report-section">03 · Compare repayment plans</div>
+      <dl className="hero-mini-pair">
+        <div className="hero-mini-current"><dt>Starting payment</dt><dd>£350/mo</dd></div>
+        <div className="hero-mini-deducted"><dt>Adjusted payment</dt><dd>£375/mo</dd></div>
+      </dl>
+      <div className="hero-mini-saving"><strong>1 month sooner</strong><span>£14.67 less interest</span></div>
+    </>
+  );
+}
+
 export default function Home() {
   return (
     <>
@@ -40,33 +69,7 @@ export default function Home() {
                     <div className="hero-report-header">
                       <div><span className="hero-report-label">Fictional sample</span><strong>Your statement, explained</strong></div>
                     </div>
-                    <div className="hero-report-section">1. Where you stand</div>
-                    <div className="hero-mini-position">
-                      <div><span>Statement balance</span><strong>£2,400.00</strong><span className="hero-mini-change">↑ £250.00 higher</span></div>
-                      <div className="hero-mini-due"><span>Minimum payment</span><strong>£62.00</strong><span>Due 25 November</span></div>
-                    </div>
-                    <div className="hero-report-section">2. What changed it</div>
-                    <dl className="hero-mini-pair">
-                      <div className="hero-mini-added">
-                        <dt>Added to balance</dt>
-                        <dd>+£625.00</dd>
-                      </div>
-                      <div className="hero-mini-deducted">
-                        <dt>Taken off balance</dt>
-                        <dd>−£375.00</dd>
-                      </div>
-                    </dl>
-                    <div className="hero-report-section">3. When could you clear it?</div>
-                    <dl className="hero-mini-pair">
-                      <div className="hero-mini-current">
-                        <dt>Current plan · £350/mo</dt>
-                        <dd>Jun 2027</dd>
-                      </div>
-                      <div className="hero-mini-deducted">
-                        <dt>Future plan · £375/mo</dt>
-                        <dd>May 2027</dd>
-                      </div>
-                    </dl>
+                    <HeroReportSummary />
                     <figcaption><a href="#examples" data-open-sample="">See the full example</a></figcaption>
                   </div>
                 </figure>
@@ -75,33 +78,7 @@ export default function Home() {
                   <div className="hero-phone-content">
                     <span className="hero-report-label">Fictional sample</span>
                     <strong className="hero-phone-title">Your statement, explained</strong>
-                    <div className="hero-report-section">1. Where you stand</div>
-                    <div className="hero-mini-position">
-                      <div><span>Statement balance</span><strong>£2,400.00</strong><span className="hero-mini-change">↑ £250.00 higher</span></div>
-                      <div className="hero-mini-due"><span>Minimum payment</span><strong>£62.00</strong><span>Due 25 November</span></div>
-                    </div>
-                    <div className="hero-report-section">2. What changed it</div>
-                    <dl className="hero-mini-pair">
-                      <div className="hero-mini-added">
-                        <dt>Added</dt>
-                        <dd>+£625.00</dd>
-                      </div>
-                      <div className="hero-mini-deducted">
-                        <dt>Taken off</dt>
-                        <dd>−£375.00</dd>
-                      </div>
-                    </dl>
-                    <div className="hero-report-section">3. When could you clear it?</div>
-                    <dl className="hero-mini-pair">
-                      <div className="hero-mini-current">
-                        <dt>Current plan</dt>
-                        <dd>Jun 2027</dd>
-                      </div>
-                      <div className="hero-mini-deducted">
-                        <dt>Future plan</dt>
-                        <dd>May 2027</dd>
-                      </div>
-                    </dl>
+                    <HeroReportSummary />
                   </div>
                 </div>
               </div>
