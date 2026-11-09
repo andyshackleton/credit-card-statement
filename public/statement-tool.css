@@ -339,6 +339,7 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
 }
 .payoff-assumptions {background:#f6effa;color:#482a5e}
 
+.guide-groups {display:grid;gap:1.25rem}
 #guides .guide-link-list {display:grid;gap:.5rem;margin:0;padding:0;list-style:none}
 .guide-link-list a {
   display:flex;align-items:center;gap:.7rem;min-height:48px;padding:.55rem .75rem;
