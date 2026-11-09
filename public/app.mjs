@@ -61,9 +61,19 @@ function renderBalance(container,data) {
       (minimum ? 'Due ' : '')+format(due),'statement-position-date'));
     panel.append(payment);
   }
-  container.append(panel,reportHeading('02','How your balance changed'));
+  container.append(panel);
+  const costFigures = [['Interest charged',data.metrics.interest],['Fees charged',data.metrics.fees]];
+  const costs = node('dl','','statement-costs');
+  for (const [label,field] of costFigures) {
+    if (!field) continue;
+    const figure = payoffMetric(label,format(field));
+    figure.querySelector('dd').append(node('small','PDF page '+field.page));
+    costs.append(figure);
+  }
+  if (costs.childElementCount) container.append(costs);
+  container.append(reportHeading('02','How your balance changed'));
   if (!rows) {
-    const known = [['Payments',data.payment],['Interest',data.metrics.interest],['Fees',data.metrics.fees]];
+    const known = [['Payments received',data.payment]];
     const figures = node('dl','','payoff-figures report-known');
     for (const [label,field] of known) if (field) figures.append(payoffMetric(label,format(field)));
     if (figures.childElementCount) container.append(figures);
@@ -159,6 +169,7 @@ function renderPayoff(container,data,sample) {
     panel.append(node('p','There is no balance to repay on this statement.'));
     return;
   }
+  panel.append(node('p','See how a different monthly payment could change your payoff date and total interest.','report-section-intro'));
   const recentPayment = data.payment?.value > 0 ? data.payment.value : undefined;
   const singleRate = data.rates.length === 1 && !promoEnd && !data.conflicts.includes('promoEnd') ? data.rates[0] : null;
   const rate = sample ? 24.9 : stale ? undefined : singleRate?.value;
@@ -291,7 +302,7 @@ function renderPayoff(container,data,sample) {
       const card = node('div','','payoff-option payoff-option-'+index);
       const heading = node('div','','payoff-option-heading');
       const title = node('h4','');
-      title.append(payoffIcon(index ? 'transfer' : 'payment'),index ? 'Future plan' : 'Current plan');
+      title.append(payoffIcon(index ? 'transfer' : 'payment'),index ? 'Adjusted payment' : 'Starting payment');
       const payment = node('div','','payoff-payment');
       payment.append(node('strong',pounds.format(payments[index])),node('span','per month'));
       heading.append(title,payment);
@@ -409,7 +420,7 @@ function drawPayoff(container,results,balance,finishDate) {
     if (result.status !== 'complete') return;
     const finish = finishDate(result.months);
     const row = node('div','','payoff-endpoint-row');
-    const endpoint = node('span',(index ? 'Future plan' : 'Current plan')+' · '+
+    const endpoint = node('span',(index ? 'Adjusted payment' : 'Starting payment')+' · '+
       (finish ? shortDate.format(finish) : result.months+' mo'),'payoff-endpoint payoff-endpoint-'+index);
     endpoint.style.setProperty('--endpoint',x(result.months)+'%');
     row.append(endpoint);
