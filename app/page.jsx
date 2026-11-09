@@ -226,6 +226,11 @@ export default function Home() {
               <a href="#guides">UK credit card guides</a>
               <a href="#ownership">How we handle your PDF</a>
             </nav>
+            <section className="footer-contact" aria-labelledby="footer-contact-title">
+              <h2 id="footer-contact-title">Contact</h2>
+              <a href="mailto:hello@creditcardstatement.co.uk">hello@creditcardstatement.co.uk</a>
+              <p>We aim to reply within two working days.</p>
+            </section>
           </div>
           <div className="footer-base"><span>© 2026 Statement Check</span><a href="#brand">Back to top</a></div>
         </div>
