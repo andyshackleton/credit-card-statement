@@ -122,7 +122,7 @@ export default function Home() {
               <div id="balance-breakdown" />
               <div id="payoff" />
               <details id="report-details" className="report-details">
-                <summary>Statement figures and exports</summary>
+                <summary>Statement figures and downloads</summary>
                 <div id="metrics" />
                 <div id="rates" />
                 <div className="actions exports">
