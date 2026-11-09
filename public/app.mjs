@@ -221,7 +221,7 @@ function renderPayoff(container,data,sample) {
   balanceInput.readOnly = !stale && balance?.value > 0 && balance.value <= 1000000000;
   rateInput.readOnly = rate !== undefined && rate >= 0 && rate <= 100;
   if (balanceInput.readOnly) balanceInput.parentElement.append(node('small','From your statement'));
-  if (rateInput.readOnly) rateInput.parentElement.append(node('small',sample ? 'Fictional estimate assumption' : 'From your statement'));
+  if (rateInput.readOnly) rateInput.parentElement.append(node('small',sample ? 'Example rate assumption' : 'From your statement'));
   const monthLabel = node('label','First payment month (YYYY-MM)');
   const monthInput = node('input','');
   Object.assign(monthInput,{type:'month',value:suggestedMonth,required:true});
@@ -230,7 +230,7 @@ function renderPayoff(container,data,sample) {
   controls.append(monthLabel);
   const confirm = node('button','Use these figures','report-button');
   confirm.type = 'button';
-  const note = sample ? 'Fictional inputs for the sample estimate.'
+  const note = sample ? 'Inputs for the example estimate.'
     : stale ? 'This statement may be out of date. Enter your latest balance and rate, then choose a first payment month.'
     : 'Figures taken from your statement are read-only. Fill in any missing figures and confirm what you plan to pay each month. Any payment prefilled here is from your statement.';
   settings.append(node('p',note,'quiet'),controls,confirm);
@@ -483,7 +483,7 @@ function renderRates(container,data) {
 
 function show(data, sample = false, scroll = true) {
   current = {sample,...data};
-  $('result-type').textContent = sample ? 'Fictional sample' : 'Statement report';
+  $('result-type').textContent = sample ? 'Example figures' : 'Statement report';
   const statementDate = data.metrics.statementDate;
   $('report-date').hidden = !statementDate;
   $('report-date').textContent = statementDate ? 'Statement dated '+format(statementDate) : '';
