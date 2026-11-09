@@ -94,33 +94,30 @@ export default function Home() {
             <section className="lc-trust" id="examples" aria-labelledby="case-title">
               <div className="report-preview-intro">
                 <p className="report-eyebrow">Sample report</p>
-                <h2 id="case-title">See what your statement could tell you.</h2>
-                <p>Follow the numbers from your statement balance to what a different monthly payment could change.</p>
+                <h2 id="case-title">What could an extra £25 a month change?</h2>
+                <p>See how one adjustment changes the estimated payoff date and interest on a £2,400 balance.</p>
                 <button data-open-sample="" className="report-button" type="button">Open the sample report</button>
               </div>
-              <div className="report-preview-sheet">
-                <div className="report-preview-sheet-header">
-                  <strong>Statement at a glance</strong>
-                  <span>Fictional figures</span>
+              <figure className="report-preview-sheet" aria-label="Fictional repayment comparison">
+                <div className="report-preview-impact">
+                  <span>Fictional repayment estimate</span>
+                  <strong>1 month sooner</strong>
+                  <span>£14.67 less in estimated interest</span>
                 </div>
                 <dl className="report-preview-list">
                   <div>
-                    <dt>Statement balance</dt>
-                    <dd className="report-preview-value">£2,400</dd>
-                    <dd className="report-preview-context">£62 minimum payment due 25 November</dd>
+                    <dt>£350 <span>per month</span></dt>
+                    <dd>8 months</dd>
+                    <dd className="report-preview-track" aria-hidden="true"><span /></dd>
                   </div>
                   <div>
-                    <dt>Change since last statement</dt>
-                    <dd className="report-preview-value">£250 higher</dd>
-                    <dd className="report-preview-context">£600 in net spending and interest, with £350 paid</dd>
-                  </div>
-                  <div>
-                    <dt>Paying £375 a month instead of £350</dt>
-                    <dd className="report-preview-value">1 month sooner</dd>
-                    <dd className="report-preview-context">£14.67 less in estimated interest</dd>
+                    <dt>£375 <span>per month</span></dt>
+                    <dd>7 months</dd>
+                    <dd className="report-preview-track" aria-hidden="true"><span /></dd>
                   </div>
                 </dl>
-              </div>
+                <figcaption>Assumes a fixed 24.9% annual rate and no new spending or fees.</figcaption>
+              </figure>
             </section>
             <section className="lc-how" id="how-it-works">
               <div className="lc-section-heading">
