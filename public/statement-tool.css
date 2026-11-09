@@ -144,13 +144,6 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
 .hero-benefit-next {padding:12px;border-radius:12px;background:#f5ecfa;color:#382046}
 .hero-benefit-next svg {background:#e9d7f3}
 .lc-home .lc-hero .hero-benefit-next p {color:#553d62}
-.hero-benefit-action {
-  margin-top:.45rem;padding:0;border:0;background:none;color:#542775;
-  font:700 .85rem/1.35 system-ui,sans-serif;text-align:left;text-decoration:underline;
-  text-underline-offset:3px;cursor:pointer;
-}
-.hero-benefit-action:hover {color:#382046}
-.lc-home .lc-hero .hero-benefit-action:focus-visible {outline-color:#542775}
 @media (min-width:1024px) {
   .lc-home .lc-hero {grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:center}
 }
