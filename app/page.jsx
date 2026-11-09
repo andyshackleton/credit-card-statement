@@ -168,8 +168,8 @@ export default function Home() {
             </section>
             <section className="report-faq lc-faq" id="questions">
               <div>
-                <p className="report-eyebrow">Before you take the next step</p>
-                <h2>A few<br /><em>useful answers.</em></h2>
+                <p className="report-eyebrow">Using Statement Check</p>
+                <h2>Common questions<br /><em>about the tool.</em></h2>
               </div>
               <div>
                 <details>
@@ -181,15 +181,15 @@ export default function Home() {
                   <p>Yes. You can check one statement at a time and download the summary for free.</p>
                 </details>
                 <details>
-                  <summary>What if I can’t find the download in the app?</summary>
-                  <p>Try signing in to online banking in your browser and opening the Statements section for your credit card.</p>
+                  <summary>What if a figure says “Not identified”?</summary>
+                  <p>Check the original PDF for that figure. Where the report identifies a figure, it shows the page number so you can verify it.</p>
                 </details>
               </div>
             </section>
             <section className="lc-trust" id="guides" aria-labelledby="guides-title">
               <div>
                 <p className="report-eyebrow">UK credit card guides</p>
-                <h2 id="guides-title">Understand<br /><em>your statement.</em></h2>
+                <h2 id="guides-title">APR, interest<br /><em>and how to read your statement.</em></h2>
               </div>
               <ul className="guide-link-list">
                 <li><a href="/guides/credit-card-apr-and-interest-charged.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M9 7a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm10 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" /></svg><span>Where to find your credit card APR and interest charged</span></a></li>
@@ -212,18 +212,22 @@ export default function Home() {
           <div className="footer-layout">
             <div className="footer-identity">
               <a className="report-brand" href="#" aria-label="Statement Check home"><img className="statement-logo" src="/statement-check-logo.webp" width="900" height="123" alt="" /></a>
-              <p>A free UK credit card statement check.</p>
+              <p>See what changed on your UK credit card and compare how long it could take to clear the balance.</p>
             </div>
-            <nav aria-label="Footer navigation">
-              <h2>Explore Statement Check</h2>
-              <a href="#examples" data-open-sample="">Sample result</a>
+            <nav aria-labelledby="footer-tool">
+              <h2 id="footer-tool">Statement check</h2>
+              <a href="#demo">Check my statement</a>
+              <a href="#examples" data-open-sample="">Sample report</a>
               <a href="#how-it-works">Find my statement</a>
-              <a href="#ownership">Privacy</a>
-              <a href="#questions">FAQs</a>
-              <a href="#guides">Guides</a>
+            </nav>
+            <nav aria-labelledby="footer-help">
+              <h2 id="footer-help">Help and privacy</h2>
+              <a href="#questions">Using the tool</a>
+              <a href="#guides">UK credit card guides</a>
+              <a href="#ownership">How we handle your PDF</a>
             </nav>
           </div>
-          <div className="footer-base"><span>© 2026 Statement Check</span><a href="#main">Back to top</a></div>
+          <div className="footer-base"><span>© 2026 Statement Check</span><a href="#brand">Back to top</a></div>
         </div>
       </footer>
       <Script src="/statement-check.mjs" type="module" strategy="afterInteractive" />
