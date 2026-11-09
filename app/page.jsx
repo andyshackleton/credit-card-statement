@@ -8,7 +8,7 @@ export default function Home() {
         <a className="report-skip" href="#main">Skip to content</a>
         <header className="report-header marketing-header">
           <a className="report-brand" href="#" id="brand" aria-label="Statement Check home"><img className="statement-logo" src="/statement-check-logo.webp" width="900" height="123" alt="" /></a>
-          <nav id="marketing-navigation" data-open="false" aria-label="Main navigation"><a href="#service">What you’ll see</a><a href="#examples">Sample result</a><a href="#how-it-works">Find my statement</a><a href="#ownership">Privacy</a><a href="#questions">FAQs</a><a href="#guides">Guides</a></nav>
+          <nav id="marketing-navigation" data-open="false" aria-label="Main navigation"><a href="#service">What you’ll see</a><a href="#examples" data-open-sample="">Sample result</a><a href="#how-it-works">Find my statement</a><a href="#ownership">Privacy</a><a href="#questions">FAQs</a><a href="#guides">Guides</a></nav>
           <div className="marketing-header-actions">
             <a className="report-button" href="#demo">Check my statement</a>
             <button className="marketing-menu-toggle" type="button" aria-expanded="false" aria-controls="marketing-navigation" aria-label="Toggle navigation">☰</button>
@@ -67,7 +67,7 @@ export default function Home() {
                         <dd>May 2027</dd>
                       </div>
                     </dl>
-                    <figcaption><a href="#examples">See the full sample</a></figcaption>
+                    <figcaption><a href="#examples" data-open-sample="">See the full example</a></figcaption>
                   </div>
                 </figure>
                 <div className="hero-phone" aria-hidden="true">
@@ -107,8 +107,14 @@ export default function Home() {
               </div>
             </section>
             <section id="result" hidden aria-labelledby="result-title">
-              <p className="eyebrow" id="result-type" />
-              <h2 id="result-title" tabIndex="-1">Your statement, explained</h2>
+              <div className="report-result-header">
+                <div>
+                  <p className="eyebrow" id="result-type" />
+                  <h2 id="result-title" tabIndex="-1">Your statement, explained</h2>
+                  <p className="report-sample-note" id="sample-note" hidden>Example figures. Choose your own PDF to get a personal report.</p>
+                </div>
+                <button type="button" className="report-button secondary report-clear" id="clear">Close report</button>
+              </div>
               <p id="statement-issues" className="statement-issues" hidden />
               <div id="balance-breakdown" />
               <div id="payoff" />
@@ -122,7 +128,6 @@ export default function Home() {
                   <button className="link" id="json">Download JSON</button>
                 </div>
               </details>
-              <button className="link report-clear" id="clear">Clear result</button>
             </section>
             <section className="lc-problem" id="why-yotion">
               <div className="lc-section-heading">
@@ -282,7 +287,7 @@ export default function Home() {
             <nav aria-label="Footer navigation">
               <h2>Explore Statement Check</h2>
               <a href="#service">What you’ll see</a>
-              <a href="#examples">Sample result</a>
+              <a href="#examples" data-open-sample="">Sample result</a>
               <a href="#how-it-works">Find my statement</a>
               <a href="#ownership">Privacy</a>
               <a href="#questions">FAQs</a>
