@@ -448,3 +448,17 @@ body:has(#sample-dialog[open]) {overflow:hidden}
   background:linear-gradient(140deg,#454951,#24272d);
   border-color:#343840;color:#fff;
 }
+
+#card-comparison {margin-block:2rem;padding:1rem;border:1px solid var(--line);border-radius:12px;background:#fff}
+#card-comparison summary {color:#292630}
+#comparison-status:empty {display:none}
+.comparison-table-wrap {overflow-x:auto;margin:1rem 0}
+.comparison-table {width:100%;border-collapse:collapse;font-size:.875rem;color:#292630}
+.comparison-table caption {text-align:left;font-weight:700;padding:.5rem 0}
+.comparison-table th,.comparison-table td {padding:.65rem;border-bottom:1px solid #e8e5eb;text-align:left;vertical-align:top}
+.comparison-table thead,.comparison-table tbody tr:nth-child(even) {background:#f8f7fa}
+.comparison-table small {display:block;color:var(--muted)}
+#comparison-form:not([hidden]) {display:flex;align-items:center;flex-wrap:wrap;gap:.75rem}
+#comparison-budget {width:8rem;padding:.5rem;border:1px solid #b6afbc;border-radius:6px}
+.comparison-remove {border:0;background:transparent;color:#523366;text-decoration:underline;cursor:pointer}
+@media print {#card-comparison {display:none!important}}
