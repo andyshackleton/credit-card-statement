@@ -78,6 +78,20 @@ export default function Home() {
               <div id="balance-breakdown" />
               <section id="statement-insights" aria-label="Statement insights" />
               <div id="payoff" />
+              <details id="card-comparison" className="report-details" hidden>
+                <summary>Compare with another card</summary>
+                <p>Add one recent PDF statement per card. Confirm the figures below, then compare two ways of dividing one monthly payment. Your statements stay on this device.</p>
+                <button type="button" id="choose-comparison-file" className="report-button secondary">Add another statement</button>
+                <input type="file" id="comparison-file" accept=".pdf,application/pdf" hidden />
+                <p id="comparison-status" role="status"></p>
+                <div id="comparison-cards"></div>
+                <form id="comparison-form" hidden>
+                  <label htmlFor="comparison-budget">Total monthly budget for these cards (£)</label>
+                  <input id="comparison-budget" type="number" min="0.01" max="1000000" step="0.01" required />
+                  <button className="report-button" type="submit">Compare repayments</button>
+                </form>
+                <div id="comparison-result" aria-live="polite"></div>
+              </details>
               <details id="report-details" className="report-details">
                 <summary>Statement figures and downloads</summary>
                 <p className="report-figure-help">Page numbers show where each figure came from. For anything marked “Not identified”, check your PDF or ask your card provider.</p>

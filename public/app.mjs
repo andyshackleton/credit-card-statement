@@ -1,3 +1,4 @@
+import {statementHash,comparisonDetails,comparisonCard,compareRepayments} from './card-comparison.mjs';
 import {parseStatement,pageLines} from './parser.mjs';
 import {projectPayoff,statementDay,paymentForMonths,projectionLimit} from './payoff.mjs';
 
@@ -507,16 +508,119 @@ function show(data, sample = false, scroll = true) {
   renderBalance($('balance-breakdown'),data);
   renderInsights($('statement-insights'),data);
   renderPayoff($('payoff'),data,sample);
+  $('card-comparison').hidden = sample || !comparisonReports.length;
   $('result').hidden = false;
   if (scroll) {
     $('result-title').focus({preventScroll:true});
     $('result').scrollIntoView({block:'start',behavior:'instant'});
   }
 }
+const comparisonReports = [];
+const modelledCards = () => comparisonReports.map((report, index) => comparisonCard(report, index + 1));
+function comparisonTable(caption, headings, rows, rowHeaders = false) {
+  const wrap = node('div','','comparison-table-wrap');
+  const table = node('table','','comparison-table');
+  const head = table.createTHead().insertRow();
+  table.createCaption().textContent = caption;
+  for (const label of headings) {
+    const cell = node('th',label);
+    cell.scope = 'col';
+    head.append(cell);
+  }
+  const body = table.createTBody();
+  for (const row of rows) {
+    const tr = body.insertRow();
+    row.forEach((value, index) => {
+      const cell = node(rowHeaders && index === 0 ? 'th' : 'td', '');
+      if (cell.tagName === 'TH') cell.scope = 'row';
+      cell.append(value);
+      tr.append(cell);
+    });
+  }
+  wrap.append(table);
+  return wrap;
+}
+function renderComparisonCards() {
+  const cards = modelledCards();
+  $('comparison-result').replaceChildren();
+  $('comparison-form').hidden = cards.length < 2 || cards.some(card => card.reason);
+  $('comparison-cards').replaceChildren();
+  if (!cards.length) return;
+  const sourced = (field, text) => {
+    if (!field) return 'Not found';
+    const cell = node('span',text);
+    cell.append(node('small','Page '+field.page));
+    return cell;
+  };
+  const rows = cards.map((card,index) => {
+    const name = node('strong',card.label);
+    if (card.statementDate) name.append(node('small',card.statementDate.value));
+    const status = node('div',card.reason || 'Ready to compare');
+    if (index > 0) {
+      const remove = node('button','Remove','comparison-remove');
+      remove.type = 'button';
+      remove.setAttribute('aria-label','Remove '+card.label);
+      remove.onclick = () => {
+        comparisonReports.splice(index,1);
+        $('comparison-status').textContent = card.label+' removed.';
+        renderComparisonCards();
+        $('choose-comparison-file').focus();
+      };
+      status.append(document.createElement('br'),remove);
+    }
+    return [name,sourced(card.balance,card.balance && format(card.balance)),
+      sourced(card.minimum,card.minimum && format(card.minimum)),
+      sourced(card.rate,card.rate && card.rate.value+'% a year'),status];
+  });
+  $('comparison-cards').append(comparisonTable('Review your cards',
+    ['Card','Balance','Minimum','Interest rate','Status'],rows,true));
+  if (cards[0].reason) $('comparison-cards').append(node('p',
+    'The first statement can’t be used for this comparison. Choose a different starting statement using the main PDF button.'));
+}
+$('choose-comparison-file').onclick = () => $('comparison-file').click();
+$('comparison-budget').addEventListener('input',() => $('comparison-result').replaceChildren());
+$('comparison-form').onsubmit = event => {
+  event.preventDefault();
+  const cards = modelledCards();
+  if (cards.length < 2 || cards.some(card => card.reason)) return;
+  const budget = $('comparison-budget').valueAsNumber;
+  if (!Number.isFinite(budget) || budget <= 0) return;
+  const avalanche = compareRepayments(cards,budget,'avalanche');
+  const result = $('comparison-result');
+  result.replaceChildren();
+  if (avalanche.shortfall) {
+    result.append(node('p','This budget is '+pounds.format(avalanche.shortfall)+' below the combined statement minimums.'));
+    return;
+  }
+  const snowball = compareRepayments(cards,budget,'snowball');
+  const first = plan => {
+    if (!plan.months) return '—';
+    const month = Math.min(...plan.debts.map(card => card.cleared));
+    return plan.debts.filter(card => card.cleared === month).map(card => card.label).join(', ')+' (month '+month+')';
+  };
+  const methods = ['Highest interest first (Avalanche)','Smallest balance first (Snowball)'];
+  result.append(comparisonTable(cards.length+' cards · '+pounds.format(budget)+' a month',
+    ['Estimated result',...methods],[
+      ['First card cleared',first(avalanche),first(snowball)],
+      ['All cards cleared',...([avalanche,snowball].map(plan => plan.months ? 'Month '+plan.months : 'Beyond the modelled period'))],
+      ['Total interest',...([avalanche,snowball].map(plan => plan.months ? pounds.format(plan.interest) : '—'))],
+    ],true));
+  if (avalanche.months && snowball.months) {
+    const difference = Math.round((snowball.interest-avalanche.interest)*100)/100;
+    result.append(node('p',difference === 0 ? 'Both methods have the same estimated interest cost.'
+      : (difference > 0 ? 'Highest interest first' : 'Smallest balance first')+
+        ' costs '+pounds.format(Math.abs(difference))+' less in estimated interest.'));
+    result.append(comparisonTable('Where your first monthly payment goes',['Card',...methods],
+      cards.map((card,index) => [card.label,pounds.format(avalanche.debts[index].firstPayment/100),
+        pounds.format(snowball.debts[index].firstPayment/100)]),true));
+  }
+  result.append(node('p','Estimates hold statement minimums and rates fixed, add interest monthly and assume no new spending or fees. Actual statements can differ.'));
+};
+
 const sampleDialog = $('sample-dialog');
 let sampleOpener = null;
 let previousReport = null;
-function reset() {
+function reset(keepComparison = false) {
   sampleOpener = null;
   previousReport = null;
   generation++;
@@ -525,6 +629,14 @@ function reset() {
   for (const id of ['metrics','rates','balance-breakdown','statement-insights','payoff']) $(id).replaceChildren();
   $('status').textContent = '';
   $('file').value = '';
+  $('choose-comparison-file').disabled = false;
+  $('comparison-status').textContent = '';
+  if (!keepComparison) {
+    comparisonReports.length = 0;
+    $('card-comparison').open = false;
+    $('comparison-budget').value = '';
+    renderComparisonCards();
+  }
 }
 async function readPageItems(page) {
   // Safari may support stream readers without supporting async iteration of streams.
@@ -541,16 +653,20 @@ async function readPageItems(page) {
   }
 }
 
-$('file').addEventListener('change',async event=>{
+async function handleStatement(event) {
   const file = event.target.files[0];
   if (!file) return;
-  reset();
+  const additional = event.target.id === 'comparison-file';
+  event.target.value = '';
+  if (!additional) reset();
+  const status = $(additional ? 'comparison-status' : 'status');
   const attempt = generation;
   if (file.size > 15*1024*1024) {
-    $('status').textContent = 'Choose a PDF no larger than 15 MB.';
+    status.textContent = 'Choose a PDF no larger than 15 MB.';
     return;
   }
-  $('status').textContent = 'Opening your PDF on this device…';
+  if (additional) $('choose-comparison-file').disabled = true;
+  status.textContent = 'Opening your PDF on this device…';
   let stage = 'FILE';
   async function readPages(pdfjs,bytes,compatibility = false) {
     stage = 'OPEN';
@@ -565,7 +681,7 @@ $('file').addEventListener('change',async event=>{
       stage = 'TEXT';
       const pages = [];
       for (let page = 1; page <= pdf.numPages && attempt === generation; page++) {
-        $('status').textContent = 'Reading page '+page+' of '+pdf.numPages+'…';
+        status.textContent = 'Reading page '+page+' of '+pdf.numPages+'…';
         const pdfPage = await pdf.getPage(page);
         const items = pdf.isPureXfa ? (await pdfPage.getTextContent()).items : await readPageItems(pdfPage);
         pages.push(pageLines(items));
@@ -579,6 +695,12 @@ $('file').addEventListener('change',async event=>{
   try {
     const bytes = new Uint8Array(await file.arrayBuffer());
     if (attempt !== generation) return;
+    const fileHash = await statementHash(bytes);
+    if (attempt !== generation) return;
+    if (additional && comparisonReports.some(report => report.comparison.fileHash === fileHash)) {
+      status.textContent = 'This statement is already included. Choose a statement for a different card.';
+      return;
+    }
     stage = 'ENGINE';
     const pdfjs = await import('./pdf.min.mjs');
     if (attempt !== generation) return;
@@ -590,7 +712,7 @@ $('file').addEventListener('change',async event=>{
     } catch (error) {
       if (attempt !== generation) return;
       if (error.message === 'limit' || ['PasswordException','InvalidPDFException'].includes(error.name)) throw error;
-      $('status').textContent = 'Trying the PDF reader in compatibility mode…';
+      status.textContent = 'Trying the PDF reader in compatibility mode…';
       stage = 'ENGINE';
       // Loading the worker module here lets PDF.js use its same-thread fallback.
       await import('./pdf.worker.min.mjs');
@@ -599,17 +721,25 @@ $('file').addEventListener('change',async event=>{
     }
     if (attempt !== generation) return;
     if (!pages.some(lines=>lines.length)) {
-      $('status').textContent = 'No readable text was found. If this is a scan, choose the original text-based PDF from your card provider.';
+      status.textContent = 'No readable text was found. If this is a scan, choose the original text-based PDF from your card provider.';
       return;
     }
     stage = 'REPORT';
     const result = parseStatement(pages);
     if (!Object.values(result.metrics).some(Boolean) && !result.rates.length && !result.conflicts.length) {
-      $('status').textContent = 'The PDF opened, but no supported statement fields were found. This statement layout may not be supported yet.';
+      status.textContent = 'The PDF opened, but no supported statement fields were found. This statement layout may not be supported yet.';
       return;
     }
-    show(result);
-    $('status').textContent = 'PDF read. Your report is ready below.';
+    const comparison = await comparisonDetails(pages);
+    if (attempt !== generation) return;
+    if (additional && comparisonReports.some(report => report.comparison.textHash === comparison.textHash)) {
+      status.textContent = 'This statement is already included. Choose a statement for a different card.';
+      return;
+    }
+    comparisonReports.push({...result, comparison: {...comparison, fileHash}});
+    renderComparisonCards();
+    if (!additional) show(result);
+    status.textContent = additional ? 'Statement added. Review the figures below.' : 'PDF read. Your report is ready below.';
   } catch (error) {
     if (attempt !== generation) return;
     const failure = {
@@ -619,20 +749,24 @@ $('file').addEventListener('change',async event=>{
       TEXT:'The PDF opened, but the reader could not extract its text.',
       REPORT:'The PDF opened, but Statement Check could not build the report.'
     };
-    $('status').textContent = error.message === 'limit'
+    status.textContent = error.message === 'limit'
       ? 'Choose a statement with 30 pages or fewer.'
       : error.name === 'PasswordException' ? 'This PDF is password protected. Choose an unlocked copy.'
         : error.name === 'InvalidPDFException' ? 'This file is not a readable PDF. Choose the original PDF from your card provider.'
           : failure[stage]+' (PDF-'+stage+')';
+  } finally {
+    if (additional && attempt === generation) $('choose-comparison-file').disabled = false;
   }
-});
+}
+$('file').addEventListener('change',handleStatement);
+$('comparison-file').addEventListener('change',handleStatement);
 for (const trigger of document.querySelectorAll('[data-open-sample]')) {
   trigger.addEventListener('click',event=>{
     if (trigger.matches('a') && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
     event.preventDefault();
     if (sampleDialog.open) return;
     const report = current?.sample ? previousReport : current;
-    reset();
+    reset(true);
     sampleOpener = trigger;
     previousReport = report;
     sampleDialog.append($('result'));
@@ -647,7 +781,7 @@ sampleDialog.addEventListener('close',()=>{
   const opener = sampleOpener;
   const report = previousReport;
   sampleDialog.before($('result'));
-  reset();
+  reset(true);
   if (report) show(report,false,false);
   // The mobile menu may have closed when its sample link was selected.
   const target = opener?.getClientRects().length ? opener
