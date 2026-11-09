@@ -44,13 +44,21 @@ export default function Home() {
                     <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 7-8m-5 0h5v5" /></svg>
                     <div><h2>Understand why your balance changed</h2><p>See how spending, repayments and charges added up.</p></div>
                   </li>
+                  <li>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 19 19 5M9 7a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm10 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" /></svg>
+                    <div><h2>Find your interest rates</h2><p>See the rates listed and when any promotion ends.</p></div>
+                  </li>
+                  <li>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 3v4m10-4v4M4 9h16M6 5h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" /></svg>
+                    <div><h2>See what’s due and when</h2><p>Find your minimum payment and due date.</p></div>
+                  </li>
                 </ul>
                 <div className="hero-benefit-next">
                   <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16M9 5v6m6 2v6" /></svg>
                   <div>
-                    <p className="hero-benefits-label">Explore what’s next</p>
-                    <h2>See what a different payment could change</h2>
-                    <p>Compare how long it could take to clear your balance and how much interest you might pay.</p>
+                    <h2>Explore what’s next</h2>
+                    <p>See how a different payment could change your payoff date and interest.</p>
+                    <button className="hero-benefit-action" type="button" data-open-sample="" data-sample-payoff="">Try the repayment comparison</button>
                   </div>
                 </div>
               </aside>

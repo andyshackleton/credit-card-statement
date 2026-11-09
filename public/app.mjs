@@ -638,7 +638,15 @@ for (const trigger of document.querySelectorAll('[data-open-sample]')) {
     sampleDialog.append($('result'));
     show(example,true,false);
     sampleDialog.showModal();
-    $('result-title').focus({preventScroll:true});
+    sampleDialog.scrollTop = 0;
+    if (trigger.hasAttribute('data-sample-payoff')) {
+      const heading = $('payoff').querySelector('h3');
+      heading.tabIndex = -1;
+      heading.focus({preventScroll:true});
+      heading.scrollIntoView({block:'start',behavior:'instant'});
+    } else {
+      $('result-title').focus({preventScroll:true});
+    }
   });
 }
 sampleDialog.addEventListener('close',()=>{
