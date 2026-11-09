@@ -91,30 +91,35 @@ export default function Home() {
               </details>
             </section>
             <dialog id="sample-dialog" aria-labelledby="result-title" />
-            <section className="lc-trust case-study" id="examples" aria-labelledby="case-title">
-              <div className="case-intro">
-                <p className="report-eyebrow">Fictional example</p>
+            <section className="lc-trust" id="examples" aria-labelledby="case-title">
+              <div className="report-preview-intro">
+                <p className="report-eyebrow">Sample report</p>
                 <h2 id="case-title">See what your statement could tell you.</h2>
-              </div>
-              <ul className="report-preview-list">
-                <li>
-                  <h3>Where you stand</h3>
-                  <strong className="report-preview-value">£2,400 owed</strong>
-                  <p>Minimum payment of <strong>£62</strong> due <strong>25 November</strong>.</p>
-                </li>
-                <li>
-                  <h3>Why your balance went up</h3>
-                  <strong className="report-preview-value">£250 higher</strong>
-                  <p>You paid £350, but spending after refunds and interest added £600.</p>
-                </li>
-                <li>
-                  <h3>What a different payment could change</h3>
-                  <strong className="report-preview-value">1 month sooner</strong>
-                  <p>Paying £375 a month instead of £350 could save <strong>£14.67 in estimated interest</strong>.</p>
-                </li>
-              </ul>
-              <div className="report-preview-footer">
+                <p>Follow the numbers from your statement balance to what a different monthly payment could change.</p>
                 <button data-open-sample="" className="report-button" type="button">Open the sample report</button>
+              </div>
+              <div className="report-preview-sheet">
+                <div className="report-preview-sheet-header">
+                  <strong>Statement at a glance</strong>
+                  <span>Fictional figures</span>
+                </div>
+                <dl className="report-preview-list">
+                  <div>
+                    <dt>Statement balance</dt>
+                    <dd className="report-preview-value">£2,400</dd>
+                    <dd className="report-preview-context">£62 minimum payment due 25 November</dd>
+                  </div>
+                  <div>
+                    <dt>Change since last statement</dt>
+                    <dd className="report-preview-value">£250 higher</dd>
+                    <dd className="report-preview-context">£600 in net spending and interest, with £350 paid</dd>
+                  </div>
+                  <div>
+                    <dt>Paying £375 a month instead of £350</dt>
+                    <dd className="report-preview-value">1 month sooner</dd>
+                    <dd className="report-preview-context">£14.67 less in estimated interest</dd>
+                  </div>
+                </dl>
               </div>
             </section>
             <section className="lc-how" id="how-it-works">
