@@ -464,6 +464,7 @@ function show(data, sample = false, scroll = true) {
     $('result').scrollIntoView({block:'start',behavior:'instant'});
   }
 }
+const sampleDialog = $('sample-dialog');
 let sampleOpener = null;
 let previousReport = null;
 function reset() {
@@ -580,22 +581,35 @@ for (const trigger of document.querySelectorAll('[data-open-sample]')) {
   trigger.addEventListener('click',event=>{
     if (trigger.matches('a') && (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
     event.preventDefault();
+    if (sampleDialog.open) return;
     const report = current?.sample ? previousReport : current;
     reset();
     sampleOpener = trigger;
     previousReport = report;
-    show(example,true);
+    sampleDialog.append($('result'));
+    show(example,true,false);
+    sampleDialog.showModal();
+    $('result-title').focus({preventScroll:true});
   });
 }
-$('clear').onclick = ()=>{
+sampleDialog.addEventListener('close',()=>{
   const opener = sampleOpener;
   const report = previousReport;
+  sampleDialog.before($('result'));
   reset();
   if (report) show(report,false,false);
-  // The mobile menu can close when its sample link is selected.
-  const target = opener?.getClientRects().length ? opener : $('choose-file');
+  // The mobile menu may have closed when its sample link was selected.
+  const target = opener?.getClientRects().length ? opener
+    : opener?.closest('nav')?.id === 'marketing-navigation' ? document.querySelector('.marketing-menu-toggle') : $('choose-file');
   target.focus({preventScroll:true});
-  target.scrollIntoView({block:'center',behavior:'instant'});
+});
+$('clear').onclick = ()=>{
+  if (sampleDialog.open) {
+    sampleDialog.close();
+    return;
+  }
+  reset();
+  $('choose-file').focus();
 };
 $('print').onclick = ()=>window.print();
 let detailsWereOpen = false;
