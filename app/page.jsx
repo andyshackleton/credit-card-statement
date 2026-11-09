@@ -193,14 +193,26 @@ export default function Home() {
             <section className="lc-trust" id="guides" aria-labelledby="guides-title">
               <div>
                 <p className="report-eyebrow">UK credit card guides</p>
-                <h2 id="guides-title">APR, interest<br /><em>and how to read your statement.</em></h2>
+                <h2 id="guides-title">Understand your card<br /><em>and explore ways to pay it off.</em></h2>
               </div>
-              <ul className="guide-link-list">
-                <li><a href="/guides/credit-card-apr-and-interest-charged.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M9 7a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm10 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" /></svg><span>Where to find your credit card APR and interest charged</span></a></li>
-                <li><a href="/guides/why-credit-card-interest-was-charged.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2ZM9 8h6m-6 4h6" /></svg><span>Why have I been charged interest on my credit card?</span></a></li>
-                <li><a href="/guides/why-interest-on-a-zero-percent-credit-card.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg><span>Why am I paying interest on my 0% credit card?</span></a></li>
-                <li><a href="/guides/how-to-read-a-uk-credit-card-statement.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6m-6 4h6" /></svg><span>How to read a UK credit card statement</span></a></li>
-              </ul>
+              <div className="guide-groups">
+                <div>
+                  <h3>Understanding your statement</h3>
+                  <ul className="guide-link-list">
+                    <li><a href="/guides/credit-card-apr-and-interest-charged.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M9 7a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm10 10a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" /></svg><span>Where to find your credit card APR and interest charged</span></a></li>
+                    <li><a href="/guides/why-credit-card-interest-was-charged.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2ZM9 8h6m-6 4h6" /></svg><span>Why have I been charged interest on my credit card?</span></a></li>
+                    <li><a href="/guides/why-interest-on-a-zero-percent-credit-card.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg><span>Why am I paying interest on my 0% credit card?</span></a></li>
+                    <li><a href="/guides/how-to-read-a-uk-credit-card-statement.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6m-6 4h6" /></svg><span>How to read a UK credit card statement</span></a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h3>Paying off credit card debt</h3>
+                  <ul className="guide-link-list">
+                    <li><a href="/guides/how-to-pay-off-credit-card-debt-uk.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6m-6 4h6" /></svg><span>How to pay off credit card debt in the UK</span></a></li>
+                    <li><a href="/guides/debt-avalanche-vs-debt-snowball.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6m-6 4h6" /></svg><span>Debt avalanche vs debt snowball</span></a></li>
+                  </ul>
+                </div>
+              </div>
             </section>
             <section className="lc-closing">
               <p className="report-eyebrow">See it with your own statement</p>
