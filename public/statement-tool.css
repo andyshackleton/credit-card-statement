@@ -449,3 +449,21 @@ body:has(#sample-dialog[open]) {overflow:hidden}
 #result .payoff-saving {gap:.5rem;padding:.65rem;background:#f1f8f4;border-radius:10px}
 #result .payoff-saving-item {padding:.2rem .5rem;background:transparent}
 #result #report-details {padding:.85rem 1rem;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+
+#result .report-section-heading {
+  padding:.65rem .85rem;border-radius:9px;border-left:3px solid #71388e;
+  background:#f2e8f7;color:#482a5e;
+}
+#result .report-section-number {background:#fff}
+#statement-insights:empty {display:none}
+.statement-insight-list {margin:0;padding:0 0 0 1.5rem;color:var(--ink)}
+.statement-insight-list li + li {margin-top:.4rem}
+.payoff-inputs input[readonly] {background:#f2edf5;color:#51415b}
+.payoff-inputs label small {display:block;color:var(--muted);font-size:.75rem}
+#result .payoff-saving {
+  border:1px solid #bcdcca;border-left:4px solid #14705b;
+  padding:clamp(.85rem,3vw,1.3rem);gap:.6rem 1rem;
+}
+.payoff-saving h4 {flex-basis:100%;margin:0;color:#174f43;font-size:1rem}
+#result .payoff-saving-item {color:#174f43;padding:0}
+.payoff-saving-item strong {font-size:clamp(1.2rem,3vw,1.65rem)}

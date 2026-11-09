@@ -120,6 +120,7 @@ export default function Home() {
               </div>
               <p id="statement-issues" className="statement-issues" hidden />
               <div id="balance-breakdown" />
+              <section id="statement-insights" aria-label="Statement insights" />
               <div id="payoff" />
               <details id="report-details" className="report-details">
                 <summary>Statement figures and downloads</summary>
