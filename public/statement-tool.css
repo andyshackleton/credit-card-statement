@@ -235,7 +235,7 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
 .report-known {margin-bottom:.5rem}
 .report-details {margin-block:1rem;border-top:1px solid var(--line);padding-top:.65rem}
 .report-details summary {width:fit-content;font-weight:650;cursor:pointer}
-.report-result-header {display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.75rem 1rem;margin-bottom:1rem}
+.report-result-header {display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:.75rem 1rem;margin-bottom:1.5rem;padding-bottom:1.1rem;border-bottom:1px solid var(--line)}
 .report-result-header h2 {margin-bottom:.25rem}
 .report-sample-note {margin:.35rem 0 0;color:var(--muted)}
 .report-clear {flex:none}
@@ -307,7 +307,7 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
 .statement-position {
   display:grid;grid-template-columns:minmax(0,1fr) minmax(11rem,.46fr);gap:clamp(.85rem,3vw,1.75rem);
   align-items:stretch;margin:0 0 1.5rem;padding:clamp(.8rem,2.5vw,1.25rem);
-  border-radius:16px;background:linear-gradient(120deg,#302047,#4c2864);color:#fff;
+  border-radius:12px;background:#302047;color:#fff;
   font-variant-numeric:tabular-nums;break-inside:avoid;
 }
 .statement-position-main {min-width:0;padding:clamp(.25rem,1.5vw,.75rem)}
@@ -412,3 +412,21 @@ body:has(#sample-dialog[open]) {overflow:hidden}
   }
   #sample-dialog::backdrop {display:none}
 }
+
+.report-document-meta {
+  display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .7rem;
+  color:var(--muted);font-size:.8rem;margin-bottom:.55rem;
+}
+.report-source {display:inline-flex;padding:.2rem .55rem;border-radius:5px;background:var(--soft);color:#54316c;font-weight:700}
+#result .report-section-heading {
+  display:flex;align-items:center;gap:.65rem;margin:0 0 .85rem;color:var(--ink);
+  font:700 clamp(1.05rem,2.8vw,1.35rem)/1.25 system-ui,sans-serif;letter-spacing:-.02em;
+}
+.report-section-number {
+  display:grid;place-items:center;flex:none;min-width:2rem;min-height:2rem;
+  border:1px solid var(--line);border-radius:6px;background:var(--paper);
+  color:#604272;font:700 .75rem/1 system-ui,sans-serif;font-variant-numeric:tabular-nums;
+}
+#result #payoff {margin-top:1.75rem;padding-top:1.35rem;border-top:1px solid var(--line)}
+#result #report-details {margin-top:1.5rem;padding-top:1rem}
+#result #report-details summary {color:#54316c}
