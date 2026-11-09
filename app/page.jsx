@@ -8,7 +8,7 @@ export default function Home() {
         <a className="report-skip" href="#main">Skip to content</a>
         <header className="report-header marketing-header">
           <a className="report-brand" href="#" id="brand" aria-label="Statement Check home"><img className="statement-logo" src="/statement-check-logo.webp" width="900" height="123" alt="" /></a>
-          <nav id="marketing-navigation" data-open="false" aria-label="Main navigation"><a href="#service">What you’ll see</a><a href="#examples" data-open-sample="">Sample result</a><a href="#how-it-works">Find my statement</a><a href="#ownership">Privacy</a><a href="#questions">FAQs</a><a href="#guides">Guides</a></nav>
+          <nav id="marketing-navigation" data-open="false" aria-label="Main navigation"><a href="#examples" data-open-sample="">Sample result</a><a href="#how-it-works">Find my statement</a><a href="#ownership">Privacy</a><a href="#questions">FAQs</a><a href="#guides">Guides</a></nav>
           <div className="marketing-header-actions">
             <button className="report-button" id="header-choose-file" type="button">Choose statement PDF</button>
             <button className="marketing-menu-toggle" type="button" aria-expanded="false" aria-controls="marketing-navigation" aria-label="Toggle navigation">☰</button>
@@ -80,6 +80,7 @@ export default function Home() {
               <div id="payoff" />
               <details id="report-details" className="report-details">
                 <summary>Statement figures and downloads</summary>
+                <p className="report-figure-help">Page numbers show where each figure came from. For anything marked “Not identified”, check your PDF or ask your card provider.</p>
                 <div id="metrics" />
                 <div id="rates" />
                 <div className="actions exports">
@@ -90,64 +91,31 @@ export default function Home() {
               </details>
             </section>
             <dialog id="sample-dialog" aria-labelledby="result-title" />
-            <section className="lc-problem" id="why-yotion">
-              <div className="lc-section-heading">
-                <p className="report-eyebrow">The problem</p>
-                <h2>What did your card<br /><em>actually cost you?</em></h2>
-                <p>You can see your balance in the app. To find the interest, fees and rates, you may need to look across several pages of the statement.</p>
-                <p>Statement Check puts the figures it can identify in one place, with page references so you can check them yourself.</p>
-              </div>
-            </section>
-            <section className="lc-trust" id="service">
-              <div>
-                <p className="report-eyebrow">What you’ll see</p>
-                <h2>Understand the numbers<br /><em>that matter.</em></h2>
-              </div>
-              <div>
-                <p>See the statement balance and what you were charged in interest and fees.</p>
-                <p>Find the annual rates, promotional expiry dates and minimum payment details shown on your PDF.</p>
-              </div>
-            </section>
             <section className="lc-trust case-study" id="examples" aria-labelledby="case-title">
               <div className="case-intro">
-                <p className="report-eyebrow">What you get</p>
-                <h2 id="case-title">Your statement,<br /><em>explained.</em></h2>
+                <p className="report-eyebrow">Fictional example</p>
+                <h2 id="case-title">See what your statement could tell you.</h2>
               </div>
-              <ol className="report-preview-list">
+              <ul className="report-preview-list">
                 <li>
-                  <span className="report-preview-number" aria-hidden="true">01</span>
                   <h3>Where you stand</h3>
-                  <p>See what you owe, how your balance moved and when your minimum payment is due.</p>
+                  <strong className="report-preview-value">£2,400 owed</strong>
+                  <p>Minimum payment of <strong>£62</strong> due <strong>25 November</strong>.</p>
                 </li>
                 <li>
-                  <span className="report-preview-number" aria-hidden="true">02</span>
-                  <h3>What changed it</h3>
-                  <p>See how spending, payments, refunds, interest and fees affected your balance.</p>
+                  <h3>Why your balance went up</h3>
+                  <strong className="report-preview-value">£250 higher</strong>
+                  <p>You paid £350, but spending after refunds and interest added £600.</p>
                 </li>
                 <li>
-                  <span className="report-preview-number" aria-hidden="true">03</span>
-                  <h3>When you could clear it</h3>
-                  <p>Try a different monthly payment or payoff date and see the estimated interest and time you could save.</p>
+                  <h3>What a different payment could change</h3>
+                  <strong className="report-preview-value">1 month sooner</strong>
+                  <p>Paying £375 a month instead of £350 could save <strong>£14.67 in estimated interest</strong>.</p>
                 </li>
-              </ol>
+              </ul>
               <div className="report-preview-footer">
-                <button data-open-sample="" className="report-button" type="button">Try the sample report</button>
-                <p>Explore the calculator with fictional figures.</p>
+                <button data-open-sample="" className="report-button" type="button">Open the sample report</button>
               </div>
-            </section>
-            <section className="lc-trust" id="customer-story" aria-labelledby="customer-story-title">
-              <div className="case-intro">
-                <p className="report-eyebrow">Reading your results</p>
-                <h2 id="customer-story-title">Find the detail<br /><em>behind the figures.</em></h2>
-              </div>
-              <div>
-                <p>Each recognised figure includes the page number it came from. If a field is marked “Not identified”, you can check the original statement or ask your card provider.</p>
-                <p>You can print the summary, save it as PDF or download the figures as CSV or JSON.</p>
-              </div>
-              <aside className="hero-service">
-                <h3>Interest charged and annual rates</h3>
-                <p>The interest charge is an amount in pounds for the statement period. An annual rate is a percentage listed by the card provider.</p>
-              </aside>
             </section>
             <section className="lc-how" id="how-it-works">
               <div className="lc-section-heading">
@@ -247,7 +215,6 @@ export default function Home() {
             </div>
             <nav aria-label="Footer navigation">
               <h2>Explore Statement Check</h2>
-              <a href="#service">What you’ll see</a>
               <a href="#examples" data-open-sample="">Sample result</a>
               <a href="#how-it-works">Find my statement</a>
               <a href="#ownership">Privacy</a>
