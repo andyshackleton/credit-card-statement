@@ -109,7 +109,10 @@ export default function Home() {
             <section id="result" hidden aria-labelledby="result-title">
               <div className="report-result-header">
                 <div>
-                  <p className="eyebrow" id="result-type" />
+                  <div className="report-document-meta">
+                    <span className="report-source" id="result-type" />
+                    <span id="report-date" hidden />
+                  </div>
                   <h2 id="result-title" tabIndex="-1">Your statement, explained</h2>
                   <p className="report-sample-note" id="sample-note" hidden>Example figures. Choose your own PDF to get a personal report.</p>
                 </div>
@@ -119,7 +122,7 @@ export default function Home() {
               <div id="balance-breakdown" />
               <div id="payoff" />
               <details id="report-details" className="report-details">
-                <summary>Statement details and downloads</summary>
+                <summary>Statement figures and exports</summary>
                 <div id="metrics" />
                 <div id="rates" />
                 <div className="actions exports">

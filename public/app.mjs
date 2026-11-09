@@ -21,10 +21,17 @@ function node(tag, text, cls) {
 function format(field) {
   return typeof field.value === 'number' ? pounds.format(field.value) : field.value;
 }
+function reportHeading(number,title) {
+  const heading = node('h3','','report-section-heading');
+  const step = node('span',number,'report-section-number');
+  step.setAttribute('aria-hidden','true');
+  heading.append(step,node('span',title));
+  return heading;
+}
 function renderBalance(container,data) {
   container.replaceChildren();
   const {balanceChange:change,balanceBreakdown:rows} = data;
-  container.append(node('h3','1. Where you stand'));
+  container.append(reportHeading('01','Balance and next payment'));
   const panel = node('div','','statement-position');
   const balance = data.metrics.balance;
   const position = node('div','','statement-position-main');
@@ -54,7 +61,7 @@ function renderBalance(container,data) {
       (minimum ? 'Due ' : '')+format(due),'statement-position-date'));
     panel.append(payment);
   }
-  container.append(panel,node('h3','2. What changed it'));
+  container.append(panel,reportHeading('02','How your balance changed'));
   if (!rows) {
     const known = [['Payments',data.payment],['Interest',data.metrics.interest],['Fees',data.metrics.fees]];
     const figures = node('dl','','payoff-figures report-known');
@@ -138,7 +145,7 @@ function payoffMetric(label,value) {
 
 function renderPayoff(container,data,sample) {
   const panel = node('section','','payoff');
-  panel.append(node('h3','3. When could you clear it?'));
+  panel.append(reportHeading('03','Compare repayment plans'));
   container.replaceChildren(panel);
   const {balance,minimum,due,statementDate,promoEnd} = data.metrics;
   const today = new Date();
@@ -438,7 +445,10 @@ function renderRates(container,data) {
 
 function show(data, sample = false, scroll = true) {
   current = {sample,...data};
-  $('result-type').textContent = sample ? 'FICTIONAL SAMPLE' : 'FROM YOUR PDF';
+  $('result-type').textContent = sample ? 'Fictional sample' : 'Statement report';
+  const statementDate = data.metrics.statementDate;
+  $('report-date').hidden = !statementDate;
+  $('report-date').textContent = statementDate ? 'Statement dated '+format(statementDate) : '';
   $('result-title').textContent = sample ? 'Sample statement report' : 'Your statement, explained';
   $('sample-note').hidden = !sample;
   $('clear').textContent = sample ? 'Close sample' : 'Close report';
