@@ -23,6 +23,7 @@ function format(field) {
 }
 function reportHeading(number,title) {
   const heading = node('h3','','report-section-heading');
+  heading.dataset.step = number;
   const step = node('span',number,'report-section-number');
   step.setAttribute('aria-hidden','true');
   heading.append(step,node('span',title));
@@ -489,7 +490,6 @@ function show(data, sample = false, scroll = true) {
   $('report-date').textContent = statementDate ? 'Statement dated '+format(statementDate) : '';
   $('result-title').textContent = sample ? 'Sample statement report' : 'Your statement, explained';
   $('sample-note').hidden = !sample;
-  $('clear').textContent = sample ? 'Close sample' : 'Close report';
   const issues = $('statement-issues');
   issues.hidden = data.conflicts.length === 0;
   issues.textContent = data.conflicts.length ? 'Check your statement. Different values were found for '+data.conflicts.map(key=>({
@@ -642,6 +642,7 @@ for (const trigger of document.querySelectorAll('[data-open-sample]')) {
     $('result-title').focus({preventScroll:true});
   });
 }
+$('close-sample').addEventListener('click',()=>sampleDialog.close());
 sampleDialog.addEventListener('close',()=>{
   const opener = sampleOpener;
   const report = previousReport;
@@ -654,10 +655,6 @@ sampleDialog.addEventListener('close',()=>{
   target.focus({preventScroll:true});
 });
 $('clear').onclick = ()=>{
-  if (sampleDialog.open) {
-    sampleDialog.close();
-    return;
-  }
   reset();
   $('choose-file').focus();
 };
