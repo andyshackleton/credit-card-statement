@@ -1,6 +1,7 @@
 export const metadata = {
-  title: 'Statement Check | Understand your credit card statement',
-  description: 'See what changed on your credit card statement and estimate when you could clear the balance.',
+  title: 'Free UK Credit Card Statement Checker | Statement Check',
+  description: 'Check a UK credit card statement PDF for interest, fees and balance changes. Compare repayment estimates for free, with your PDF kept on your device.',
+  alternates: { canonical: 'https://credit-card-statement.vercel.app/' },
   icons: { icon: '/favicon.png' },
 };
 
