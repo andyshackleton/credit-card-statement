@@ -33,38 +33,27 @@ export default function Home() {
                   <p id="status" role="status" />
                 </div>
               </div>
-              <div className="hero-devices">
-                <figure className="hero-report" aria-label="Browser preview of a fictional Statement Check report">
-                  <div className="hero-browser-bar" aria-hidden="true"><span className="hero-browser-dots"><i /><i /><i /></span><span className="hero-browser-address">Statement Check / Statement report</span></div>
-                  <div className="hero-report-page">
-                    <div className="hero-report-header">
-                      <div><span className="hero-report-label">Fictional example</span><strong>What changed on your statement</strong></div>
-                    </div>
-                    <div className="hero-balance-story">
-                      <strong>You paid £350.</strong>
-                      <span>Your balance still rose by £250.</span>
-                    </div>
-                    <dl className="hero-activity">
-                      <div><dt>Spending after refunds</dt><dd>+£570.60</dd></div>
-                      <div><dt>Interest charged</dt><dd>+£29.40</dd></div>
-                      <div><dt>Payments received</dt><dd>−£350.00</dd></div>
-                    </dl>
-                    <figcaption><a href="#examples" data-open-sample="">See the full example</a></figcaption>
-                  </div>
-                </figure>
-                <div className="hero-phone" aria-hidden="true">
-                  <div className="hero-phone-browser"><span>Statement Check</span></div>
-                  <div className="hero-phone-content">
-                    <span className="hero-report-label">Fictional example</span>
-                    <strong className="hero-phone-title">What you could save</strong>
-                    <div className="hero-saving-story">
-                      <strong>1 month sooner</strong>
-                      <span>£14.67 less interest</span>
-                    </div>
-                    <div className="hero-saving-payment"><strong>£350 → £375</strong><span>Monthly payment</span></div>
+              <aside className="hero-benefits" aria-label="What you’ll get from your statement check">
+                <p className="hero-benefits-label">Understand what happened</p>
+                <ul className="hero-benefit-list">
+                  <li>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2V3Zm3 5h6m-6 4h6" /></svg>
+                    <div><h2>Know what your card cost you</h2><p>See the interest and fees you were charged.</p></div>
+                  </li>
+                  <li>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 7-8m-5 0h5v5" /></svg>
+                    <div><h2>Understand why your balance changed</h2><p>See how spending, repayments and charges added up.</p></div>
+                  </li>
+                </ul>
+                <div className="hero-benefit-next">
+                  <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16M9 5v6m6 2v6" /></svg>
+                  <div>
+                    <p className="hero-benefits-label">Explore what’s next</p>
+                    <h2>See what a different payment could change</h2>
+                    <p>Compare how long it could take to clear your balance and how much interest you might pay.</p>
                   </div>
                 </div>
-              </div>
+              </aside>
             </section>
             <section id="result" hidden aria-labelledby="result-title">
               <div className="report-result-header">
