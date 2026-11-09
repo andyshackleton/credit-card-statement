@@ -457,7 +457,7 @@ function drawPayoff(container,results,balance,finishDate) {
 
 function renderRates(container,data) {
   const heading = node('h3','Annual rates','statement-rates-title');
-  container.replaceChildren(heading);
+  container.replaceChildren(heading,node('p','Interest charged is the amount in pounds for this statement period. An annual rate is the percentage listed by your card provider.','report-figure-help'));
   const list = node('dl','','statement-rates');
   for (const rate of data.rates) {
     const card = node('div','','statement-rate');
