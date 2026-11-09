@@ -3,14 +3,14 @@ import Script from 'next/script';
 export default function Home() {
   return (
     <>
-      <div className="marketing-offer-bar"><span>Free statement check</span><span>One complete PDF</span><span>Processed on your device</span></div>
+      <div className="marketing-offer-bar"><span>Free statement check</span><span>Your PDF stays on your device</span></div>
       <div className="report-site">
         <a className="report-skip" href="#main">Skip to content</a>
         <header className="report-header marketing-header">
           <a className="report-brand" href="#" id="brand" aria-label="Statement Check home"><img className="statement-logo" src="/statement-check-logo.webp" width="900" height="123" alt="" /></a>
           <nav id="marketing-navigation" data-open="false" aria-label="Main navigation"><a href="#service">What you’ll see</a><a href="#examples" data-open-sample="">Sample result</a><a href="#how-it-works">Find my statement</a><a href="#ownership">Privacy</a><a href="#questions">FAQs</a><a href="#guides">Guides</a></nav>
           <div className="marketing-header-actions">
-            <a className="report-button" href="#demo">Check my statement</a>
+            <button className="report-button" id="header-choose-file" type="button">Choose statement PDF</button>
             <button className="marketing-menu-toggle" type="button" aria-expanded="false" aria-controls="marketing-navigation" aria-label="Toggle navigation">☰</button>
           </div>
         </header>
@@ -129,6 +129,7 @@ export default function Home() {
                 </div>
               </details>
             </section>
+            <dialog id="sample-dialog" aria-labelledby="result-title" />
             <section className="lc-problem" id="why-yotion">
               <div className="lc-section-heading">
                 <p className="report-eyebrow">The problem</p>

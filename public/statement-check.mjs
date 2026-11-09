@@ -21,4 +21,7 @@ if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: re
   });
 }
 
-document.querySelector("#choose-file").addEventListener("click", () => document.querySelector("#file").click());
+const fileInput = document.querySelector('#file');
+for (const button of document.querySelectorAll('#choose-file, #header-choose-file')) {
+  button.addEventListener('click', () => fileInput.click());
+}
