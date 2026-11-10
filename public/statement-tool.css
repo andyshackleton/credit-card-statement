@@ -57,9 +57,8 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
 .metric {background:var(--soft);border-radius:8px;padding:12px}
 .metric strong {display:block;font-size:19px}
 .metric small,.rate small,.quiet {color:var(--muted)}
-.rate,.exports {display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.rate {display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
 .rate {justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line)}
-.exports button:not(.report-button) {border:0;background:none;color:var(--green);text-decoration:underline}
 @media print {
   body > :not(.report-site),.report-site > :not(main),.lc-home > :not(#result),.exports {display:none!important}
   .report-site,#result {max-width:none;padding:0;margin:0;border:0}
@@ -485,3 +484,13 @@ body:has(#sample-dialog[open]) {overflow:hidden}
 .repayment-plan summary:hover {background:#f0edf4}
 .repayment-plan > div {padding:.85rem 1rem}
 #card-comparison {margin-block:1rem}
+
+
+#result .exports {margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--line)}
+#report-exports-title {margin:0 0 .75rem;font-size:1.1rem}
+.report-export-options {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:.65rem}
+.exports .report-export-option {display:flex;justify-content:flex-start;align-items:center;gap:.75rem;width:100%;padding:.8rem;text-align:left;line-height:1.35;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px}
+.exports .report-export-option:hover {background:#f8f3fb;border-color:#bba4cc}
+.report-export-format {flex:0 0 2.75rem;padding:.35rem 0;text-align:center;border-radius:6px;background:#f1eaf7;color:#54316c;font-size:.75rem;font-weight:750}
+.report-export-option strong,.report-export-option small {display:block}
+.report-export-option small {margin-top:.2rem;color:var(--muted);font-weight:400}

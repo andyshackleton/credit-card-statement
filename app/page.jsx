@@ -106,11 +106,23 @@ export default function Home() {
                 <p className="report-figure-help">Page numbers show where each figure came from. For anything marked “Not identified”, check your PDF or ask your card provider.</p>
                 <div id="metrics" />
                 <div id="rates" />
-                <div className="actions exports">
-                  <button className="report-button" id="print">Print or save as PDF</button>
-                  <button className="report-button secondary" id="csv">Download summary CSV</button>
-                  <button className="link" id="json">Download JSON</button>
-                </div>
+                <section className="exports" aria-labelledby="report-exports-title">
+                  <h3 id="report-exports-title">Save your report</h3>
+                  <div className="report-export-options">
+                    <button type="button" className="report-button report-export-option" id="print">
+                      <span className="report-export-format">PDF</span>
+                      <span><strong>Print or save as PDF</strong><small>Keep a readable copy</small></span>
+                    </button>
+                    <button type="button" className="report-button report-export-option" id="csv">
+                      <span className="report-export-format">CSV</span>
+                      <span><strong>Download summary CSV</strong><small>Open figures in a spreadsheet</small></span>
+                    </button>
+                    <button type="button" className="report-button report-export-option" id="json">
+                      <span className="report-export-format">JSON</span>
+                      <span><strong>Download JSON</strong><small>Keep the structured report data</small></span>
+                    </button>
+                  </div>
+                </section>
               </details>
             </section>
             <dialog id="sample-dialog" aria-labelledby="result-title">
