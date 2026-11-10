@@ -499,8 +499,18 @@ body:has(#sample-dialog[open]) {overflow:hidden}
 .report-export-option strong,.report-export-option small {display:block}
 .report-export-option small {margin-top:.2rem;color:var(--muted);font-weight:400}
 
-.financial-support {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem 2rem;padding:clamp(1rem,3vw,2rem);border:1px solid var(--line);border-radius:14px;background:#f8f4fb}
-.financial-support > div {flex:1 1 23rem}
-.financial-support h2 {margin:0 0 .45rem;color:var(--ink);font-size:clamp(1.25rem,2.5vw,1.65rem)}
-.financial-support p {margin:0;color:var(--muted)}
-.financial-support .report-button {text-align:center}
+.financial-support {
+  display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:1.25rem 2rem;
+  padding:clamp(1.25rem,4vw,2.5rem);margin-bottom:clamp(1.5rem,4vw,3rem);
+  border:1px solid #e8dced;border-inline-start:4px solid #774792;border-radius:14px;
+  background:linear-gradient(110deg,#faf5fc,#fff);
+}
+.financial-support .financial-support-label {
+  margin:0 0 .4rem;color:#69437d;font-size:.75rem;font-weight:750;letter-spacing:.07em;text-transform:uppercase;
+}
+.financial-support h2 {margin:0 0 .55rem;color:var(--ink);font-size:clamp(1.35rem,3vw,1.85rem);line-height:1.2}
+.financial-support p {max-width:55ch;margin:0;color:var(--muted);line-height:1.55}
+.financial-support .report-button {display:inline-flex;align-items:center;justify-content:center;gap:.6rem;text-align:center}
+@media (max-width:700px) {
+  .financial-support {grid-template-columns:minmax(0,1fr);justify-items:start}
+}
