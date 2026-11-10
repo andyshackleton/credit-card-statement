@@ -469,8 +469,15 @@ body:has(#sample-dialog[open]) {overflow:hidden}
 .credit-usage meter::-webkit-meter-optimum-value {background:#67378a}
 .credit-usage meter::-moz-meter-bar {background:#67378a}
 .credit-usage small {color:var(--muted)}
-.purchase-cost input {display:block;max-width:9rem;margin-top:.25rem;padding:.45rem;border:1px solid #b6afbc;border-radius:6px}
-.purchase-cost p {margin:.5rem 0;font-weight:700}
+
+.purchase-cost-amount {display:flex;align-items:center;flex-wrap:wrap;gap:.5rem .9rem;margin:.85rem 0 1rem;font-weight:700}
+.purchase-cost-amount input {width:9rem;max-width:100%;padding:.55rem .7rem;border:1px solid #b6afbc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+.purchase-cost-figures {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,10rem),1fr));gap:.65rem;margin:0}
+.purchase-cost-figures > div {min-width:0;padding:.8rem 1rem;border:1px solid #e8e5eb;border-radius:9px;background:#fff}
+.purchase-cost-figures > .purchase-cost-total {background:#f3eef8;border-color:#ded1ea}
+.purchase-cost-figures dt {color:var(--muted);font-size:.85rem}
+.purchase-cost-figures dd {margin:.25rem 0 0;color:var(--ink);font-size:1.25rem;font-weight:750;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.purchase-cost-total dd {font-size:1.5rem;color:#482a5e}
 
 
 .repayment-plan {margin:.75rem 0;border:1px solid var(--line);border-radius:10px;background:#fff}
