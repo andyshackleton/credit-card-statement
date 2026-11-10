@@ -6,7 +6,7 @@ const $ = id=>document.getElementById(id);
 const pounds = new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'});
 const wholePounds = new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP',maximumFractionDigits:0});
 const paymentStep = 5;
-const labels = {balance:'Statement balance',creditLimit:'Credit limit',availableCredit:'Available to spend',estimatedInterest:'Next month’s estimated interest',interest:'Interest charged',fees:'Fees charged',minimum:'Minimum payment',due:'Payment due date',statementDate:'Statement date',promoEnd:'Promotional rate ends'};
+const labels = {balance:'Statement balance',previousBalance:'Previous balance',paymentsReceived:'Payments received',groupedCharges:'New transactions, fees and charges',creditLimit:'Credit limit',availableCredit:'Available to spend',estimatedInterest:'Next month’s estimated interest',interest:'Interest charged',fees:'Fees charged',minimum:'Minimum payment',due:'Payment due date',statementDate:'Statement date',promoEnd:'Promotional rate ends'};
 const example = parseStatement([
   ['Statement date 1 November 2026','Previous balance £2,150.00','Total purchases £595.60','Refunds £25.00 CR','Payments received £350.00 CR','Statement balance £2,400.00','Interest charged £29.40','Fees charged £0.00','Minimum payment £62.00','Payment due date 25 November 2026'],
   ['Purchases 24.9% p.a.','Balance transfer 0% p.a.','0% rate ends 31 March 2027']
@@ -75,7 +75,7 @@ function renderBalance(container,data) {
     meter.value = used;
     meter.setAttribute('aria-label','Credit used out of '+format(creditLimit));
     meter.setAttribute('aria-valuetext',pounds.format(used)+' of '+format(creditLimit));
-    usage.append(node('h4','Credit limit usage'),figures,meter,node('small','Credit limit '+format(creditLimit)+' · '+(100*used/creditLimit.value).toFixed(1)+'% used · As shown on your statement'));
+    usage.append(node('h4','Credit limit usage'),figures,meter,node('small','Credit limit '+format(creditLimit)+' · '+(100*used/creditLimit.value).toFixed(1)+'% used · '+(availableCredit.derived ? 'Available credit estimated from your statement' : 'As shown on your statement')));
     container.append(usage);
   }
   const costFigures = [['Interest charged',data.metrics.interest],['Fees charged',data.metrics.fees],['Next month’s estimated interest',estimatedInterest]];
@@ -191,9 +191,9 @@ function renderInsights(container,data) {
 }
 
 function renderPayoff(container,data,sample) {
-  const panel = node('section','','payoff');
-  panel.append(reportHeading('03','Compare repayment plans'));
-  container.replaceChildren(panel);
+  const panel = container;
+  panel.replaceChildren();
+  singlePlan = null;
   const {balance,minimum,due,statementDate,promoEnd} = data.metrics;
   const today = new Date();
   today.setHours(0,0,0,0);
@@ -207,53 +207,21 @@ function renderPayoff(container,data,sample) {
     return;
   }
   panel.append(node('p','See how a different monthly payment could change your payoff date and total interest.','report-section-intro'));
-  const recentPayment = data.payment?.value > 0 ? data.payment.value : undefined;
   const borrowingRates = data.rates.filter(rate => rate.label !== 'Default fees');
   const firstRate = borrowingRates[0];
   const singleRate = firstRate && !promoEnd && !data.conflicts.some(key => key === 'promoEnd' || key === 'rates') &&
     borrowingRates.every(rate => monthlyInterestRate(rate.value,rate.basis) === monthlyInterestRate(firstRate.value,firstRate.basis))
     ? firstRate : null;
-  const rate = sample ? 24.9 : stale ? undefined : singleRate?.value;
-  const monthValue = day=>day.getFullYear()+'-'+String(day.getMonth()+1).padStart(2,'0');
-  const currentMonth = monthValue(today);
-  const suggestedMonth = dueDay && !stale ? monthValue(dueDay) : '';
-  const monthFormat = new Intl.DateTimeFormat('en-GB',{month:'long',year:'numeric'});
-  let confirmed = sample;
-  const settings = node('details','','report-details payoff-settings');
-  const settingsLabel = node('summary','');
-  settingsLabel.append(payoffIcon('settings'),'Set up your repayment estimate');
-  settings.append(settingsLabel);
-  settings.open = !sample;
-  settings.hidden = sample;
-  const controls = node('div','','balance-inputs payoff-inputs');
-  function numberField(title,value,min,max) {
-    const label = node('label',title);
-    const input = node('input','');
-    Object.assign(input,{type:'number',inputMode:'decimal',min:String(min),max:String(max),step:'any',required:true});
-    if (value !== undefined) input.value = value;
-    label.append(input);
-    controls.append(label);
-    return input;
+  const rate = sample ? 24.9 : singleRate?.value;
+  if (stale || !(balance?.value > 0) || !(minimum?.value > 0) || rate === undefined) {
+    panel.append(node('p',stale ? 'Add a recent statement to see repayment estimates.' :
+      'We need a positive statement balance, a minimum payment and one consistent borrowing rate to estimate repayment.'));
+    return;
   }
-  const balanceInput = numberField('Balance to repay (£)',stale ? undefined : balance?.value,.01,1000000000);
-  const baselineInput = numberField('Planned monthly payment (£)',recentPayment,.01,1000000000);
-  const rateInput = numberField('Annual interest rate (%)',rate,0,100);
-  balanceInput.readOnly = !stale && balance?.value > 0 && balance.value <= 1000000000;
-  rateInput.readOnly = rate !== undefined && rate >= 0 && rate <= 100;
-  if (balanceInput.readOnly) balanceInput.parentElement.append(node('small','From your statement'));
-  if (rateInput.readOnly) rateInput.parentElement.append(node('small',sample ? 'Example rate assumption' : 'From your statement'));
-  const monthLabel = node('label','First payment month (YYYY-MM)');
-  const monthInput = node('input','');
-  Object.assign(monthInput,{type:'month',value:suggestedMonth,required:true});
-  if (!sample) monthInput.min = currentMonth;
-  monthLabel.append(monthInput);
-  controls.append(monthLabel);
-  const confirm = node('button','Use these figures','report-button');
-  confirm.type = 'button';
-  const note = sample ? 'Inputs for the example estimate.'
-    : stale ? 'This statement may be out of date. Enter your latest balance and rate, then choose a first payment month.'
-    : 'Figures taken from your statement are read-only. Fill in any missing figures and confirm what you plan to pay each month. Any payment prefilled here is from your statement.';
-  settings.append(node('p',note,'quiet'),controls,confirm);
+  const basis = sample ? undefined : singleRate.basis;
+  const balanceAmount = balance.value;
+  const usual = sample ? data.payment.value : minimum.value;
+  const monthFormat = new Intl.DateTimeFormat('en-GB',{month:'long',year:'numeric'});
   const planner = node('fieldset','','payoff-planner');
   planner.append(node('legend','Try a different plan'));
   const choices = node('div','','payoff-choices');
@@ -287,28 +255,19 @@ function renderPayoff(container,data,sample) {
   summary.setAttribute('aria-live','polite');
   const graph = node('div','','payoff-graph');
   const assumptions = node('p','','payoff-assumptions');
-  panel.append(settings,assumptions,planner,summary,graph,
+  panel.append(assumptions,planner,summary,graph,
     node('p','Estimate assumes one fixed rate and no new spending or fees. Mixed rates and promotions may give different results.','quiet payoff-note'));
 
   function finishDate(months) {
-    const [year,month] = monthInput.value.split('-').map(Number);
-    return new Date(year,month+months-2,1);
+    const start = dueDay ?? today;
+    return new Date(start.getFullYear(),start.getMonth()+months-1,1);
   }
   function update() {
     graph.replaceChildren();
-    assumptions.hidden = !confirmed;
-    planner.hidden = !confirmed;
-    if (!confirmed) {
-      summary.textContent = 'Confirm your payoff inputs to see an estimate.';
-      return;
-    }
-    const annualRate = rateInput.valueAsNumber;
-    const basis = rateInput.readOnly && !sample ? singleRate?.basis : undefined;
-    const balanceAmount = Math.round(balanceInput.valueAsNumber*100)/100;
-    const usual = Math.round(baselineInput.valueAsNumber*100)/100;
+    const annualRate = rate;
     assumptions.textContent = [
       pounds.format(balanceAmount)+' balance',annualRate+'% annual rate'+(basis ? ' ('+basis+')' : ''),
-      pounds.format(usual)+' planned monthly payment','Starts '+monthFormat.format(finishDate(1))
+      pounds.format(usual)+(sample ? ' example monthly payment' : ' statement minimum held fixed'),'Starts '+monthFormat.format(finishDate(1))
     ].join(' · ');
     const baseline = projectPayoff(balanceAmount,annualRate,usual,basis);
     const maxPayment = paymentForMonths(balanceAmount,annualRate,1,basis);
@@ -349,7 +308,7 @@ function renderPayoff(container,data,sample) {
       const card = node('div','','payoff-option payoff-option-'+index);
       const heading = node('div','','payoff-option-heading');
       const title = node('h4','');
-      title.append(payoffIcon(index ? 'transfer' : 'payment'),index ? 'Adjusted payment' : 'Starting payment');
+      title.append(payoffIcon(index ? 'transfer' : 'payment'),index ? 'Adjusted payment' : sample ? 'Starting payment' : 'Fixed statement minimum');
       const payment = node('div','','payoff-payment');
       payment.append(node('strong',pounds.format(payments[index])),node('span','per month'));
       heading.append(title,payment);
@@ -392,7 +351,12 @@ function renderPayoff(container,data,sample) {
       }
       summary.append(savings);
     }
-    drawPayoff(graph,results,balanceAmount,finishDate);
+    if (baseline.status !== 'complete' && comparison.status === 'complete') {
+      summary.append(node('p','The adjusted payment could clear the balance in '+monthsText(comparison.months)+'. The starting payment does not clear it within this model.'));
+    }
+    singlePlan = comparison.status === 'complete' ? {months:comparison.months,interest:comparison.interest,payment:comparisonPayment} : null;
+    renderRepaymentOverview();
+    drawPayoff(graph,results,balanceAmount,finishDate,sample ? 'Starting payment' : 'Fixed statement minimum');
   }
   for (const range of Object.values(ranges)) range.radio.addEventListener('change',update);
   ranges.payment.input.addEventListener('input',()=>{
@@ -403,39 +367,10 @@ function renderPayoff(container,data,sample) {
     targetMonths = ranges.time.input.valueAsNumber;
     update();
   });
-  const inputs = [balanceInput,baselineInput,rateInput,monthInput];
-  for (const input of inputs) input.addEventListener('input',()=>{
-    confirmed = false;
-    update();
-  });
-  confirm.addEventListener('click',()=>{
-    const invalid = inputs.find(input=>!input.validity.valid);
-    if (invalid) {
-      invalid.reportValidity();
-      return;
-    }
-    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(monthInput.value) || (!sample && monthInput.value < currentMonth)) {
-      summary.textContent = 'Choose this month or a future month using YYYY-MM.';
-      monthInput.focus();
-      return;
-    }
-    const required = stale ? 0 : Math.min(minimum?.value ?? 0,balanceInput.valueAsNumber);
-    if (baselineInput.valueAsNumber < required) {
-      summary.textContent = 'Enter a monthly payment of at least '+pounds.format(required)+'.';
-      baselineInput.focus();
-      return;
-    }
-    confirmed = true;
-    comparisonPayment = undefined;
-    targetMonths = undefined;
-    settings.open = false;
-    update();
-    (ranges.time.radio.checked ? ranges.time.radio : ranges.payment.radio).focus();
-  });
   update();
 }
 
-function drawPayoff(container,results,balance,finishDate) {
+function drawPayoff(container,results,balance,finishDate,startingLabel) {
   const completed = results.filter(result=>result.status === 'complete');
   if (!completed.length) return;
   const horizon = Math.max(...completed.map(result=>result.months));
@@ -468,7 +403,7 @@ function drawPayoff(container,results,balance,finishDate) {
     if (result.status !== 'complete') return;
     const finish = finishDate(result.months);
     const row = node('div','','payoff-endpoint-row');
-    const endpoint = node('span',(index ? 'Adjusted payment' : 'Starting payment')+' · '+
+    const endpoint = node('span',(index ? 'Adjusted payment' : startingLabel)+' · '+
       (finish ? shortDate.format(finish) : result.months+' mo'),'payoff-endpoint payoff-endpoint-'+index);
     endpoint.style.setProperty('--endpoint',x(result.months)+'%');
     row.append(endpoint);
@@ -549,13 +484,14 @@ function show(data, sample = false, scroll = true) {
     const field = data.metrics[key];
     const metric = node('div','','metric');
     metric.append(node('div',label),node('strong',field ? format(field) : data.conflicts.includes(key) ? 'Conflicting values' : 'Not identified'));
-    if (field) metric.append(node('small','PDF page '+field.page));
+    if (field) metric.append(node('small',field.derived ? 'Estimated from credit limit minus statement balance' : 'PDF page '+field.page));
     return metric;
   }));
   renderRates($('rates'),data);
   renderBalance($('balance-breakdown'),data);
   renderInsights($('statement-insights'),data);
-  renderPayoff($('payoff'),data,sample);
+  renderPayoff($('single-repayment'),data,sample);
+  renderMultiPlans();
   $('card-comparison').hidden = sample || !comparisonReports.length;
   $('result').hidden = false;
   if (scroll) {
@@ -590,8 +526,7 @@ function comparisonTable(caption, headings, rows, rowHeaders = false) {
 }
 function renderComparisonCards() {
   const cards = modelledCards();
-  $('comparison-result').replaceChildren();
-  $('comparison-form').hidden = cards.length < 2 || cards.some(card => card.reason);
+  renderMultiPlans();
   $('comparison-cards').replaceChildren();
   if (!cards.length) return;
   const sourced = (field, text) => {
@@ -626,44 +561,54 @@ function renderComparisonCards() {
     'The first statement can’t be used for this comparison. Choose a different starting statement using the main PDF button.'));
 }
 $('choose-comparison-file').onclick = () => $('comparison-file').click();
-$('comparison-budget').addEventListener('input',() => $('comparison-result').replaceChildren());
-$('comparison-form').onsubmit = event => {
-  event.preventDefault();
-  const cards = modelledCards();
-  if (cards.length < 2 || cards.some(card => card.reason)) return;
-  const budget = $('comparison-budget').valueAsNumber;
-  if (!Number.isFinite(budget) || budget <= 0) return;
-  const avalanche = compareRepayments(cards,budget,'avalanche');
-  const result = $('comparison-result');
-  result.replaceChildren();
-  if (avalanche.shortfall) {
-    result.append(node('p','This budget is '+pounds.format(avalanche.shortfall)+' below the combined statement minimums.'));
-    return;
+let singlePlan = null;
+let multiPlans = [];
+function renderRepaymentOverview() {
+  const rows = [['Repayment · adjusted', '1 card', ...(singlePlan
+    ? [pounds.format(singlePlan.payment),singlePlan.months+' mo',pounds.format(singlePlan.interest)]
+    : ['—','—','—'])]];
+  for (const [index,name] of ['Snowball','Avalanche'].entries()) {
+    const plan = multiPlans[index];
+    rows.push([name,plan ? plan.debtsCount+' cards' : '2+ cards',
+      plan ? pounds.format(plan.budget) : '—',
+      plan ? (plan.months ? plan.months+' mo' : 'Beyond estimate') : '—',
+      plan?.months ? pounds.format(plan.interest) : '—']);
   }
-  const snowball = compareRepayments(cards,budget,'snowball');
-  const first = plan => {
-    if (!plan.months) return '—';
-    const month = Math.min(...plan.debts.map(card => card.cleared));
-    return plan.debts.filter(card => card.cleared === month).map(card => card.label).join(', ')+' (month '+month+')';
-  };
-  const methods = ['Highest interest first (Avalanche)','Smallest balance first (Snowball)'];
-  result.append(comparisonTable(cards.length+' cards · '+pounds.format(budget)+' a month',
-    ['Estimated result',...methods],[
-      ['First card cleared',first(avalanche),first(snowball)],
-      ['All cards cleared',...([avalanche,snowball].map(plan => plan.months ? 'Month '+plan.months : 'Beyond the modelled period'))],
-      ['Total interest',...([avalanche,snowball].map(plan => plan.months ? pounds.format(plan.interest) : '—'))],
-    ],true));
-  if (avalanche.months && snowball.months) {
-    const difference = Math.round((snowball.interest-avalanche.interest)*100)/100;
-    result.append(node('p',difference === 0 ? 'Both methods have the same estimated interest cost.'
-      : (difference > 0 ? 'Highest interest first' : 'Smallest balance first')+
-        ' costs '+pounds.format(Math.abs(difference))+' less in estimated interest.'));
-    result.append(comparisonTable('Where your first monthly payment goes',['Card',...methods],
-      cards.map((card,index) => [card.label,pounds.format(avalanche.debts[index].firstPayment/100),
-        pounds.format(snowball.debts[index].firstPayment/100)]),true));
+  $('repayment-overview').replaceChildren(comparisonTable('Repayment estimates',
+    ['Plan','Scope','Monthly payment','Time to clear','Interest'],rows,true));
+}
+
+function renderMultiPlans() {
+  multiPlans = [];
+  const cards = current?.sample ? [] : modelledCards();
+  const ready = cards.length >= 2 && cards.every(card => !card.reason);
+  const minimum = cards.reduce((sum,card) => sum + Math.round((card.minimum?.value ?? 0)*100),0);
+  const recent = comparisonReports.reduce((sum,report) => sum + Math.round((report.payment?.value ?? 0)*100),0);
+  const useRecent = comparisonReports.every(report => report.payment?.value > 0) && recent >= minimum;
+  const budget = (useRecent ? recent : minimum)/100;
+  for (const method of ['snowball','avalanche']) {
+    const panel = $(method+'-plan');
+    panel.replaceChildren();
+    if (!ready) {
+      panel.append(node('p',current?.sample ? 'Open your own statement, then add a second card to see this estimate.' : cards.length < 2 ? 'Add statements for at least two cards to see this estimate.' :
+        'Review the statements below. Every included card needs an identifiable balance, minimum and consistent borrowing rate.'));
+      continue;
+    }
+    const plan = compareRepayments(cards,budget,method);
+    multiPlans.push({...plan,budget,debtsCount:cards.length});
+    panel.append(node('p',pounds.format(budget)+' a month across '+cards.length+' cards. '+(useRecent
+      ? 'This illustration repeats the total payments received on these statements.'
+      : 'This illustration holds the combined statement minimums fixed as the monthly budget.')));
+    if (!plan.months) {
+      panel.append(node('p','The cards do not all clear within the modelled period.'));
+      continue;
+    }
+    panel.append(comparisonTable('Estimated payments and clearance',['Card','First payment','Clears in'],
+      plan.debts.map(card => [card.label,pounds.format(card.firstPayment/100),'Month '+card.cleared]),true),
+      node('p','All cards clear in '+plan.months+' months, with '+pounds.format(plan.interest)+' in estimated interest. Assumes fixed rates and minimums, with no new spending or fees.'));
   }
-  result.append(node('p','Estimates hold statement minimums and rates fixed, add interest monthly and assume no new spending or fees. Actual statements can differ.'));
-};
+  renderRepaymentOverview();
+}
 
 const sampleDialog = $('sample-dialog');
 let sampleOpener = null;
@@ -674,15 +619,15 @@ function reset(keepComparison = false) {
   generation++;
   current = null;
   $('result').hidden = true;
-  for (const id of ['metrics','rates','balance-breakdown','statement-insights','payoff']) $(id).replaceChildren();
+  for (const id of ['metrics','rates','balance-breakdown','statement-insights','single-repayment']) $(id).replaceChildren();
   $('status').textContent = '';
   $('file').value = '';
   $('choose-comparison-file').disabled = false;
   $('comparison-status').textContent = '';
   if (!keepComparison) {
     comparisonReports.length = 0;
-    $('card-comparison').open = false;
-    $('comparison-budget').value = '';
+    $('payoff').querySelectorAll('details').forEach(plan => { plan.open = false; });
+    singlePlan = null;
     renderComparisonCards();
   }
 }
@@ -859,7 +804,7 @@ $('json').onclick = ()=>download(JSON.stringify(current,null,2),'application/jso
 $('csv').onclick = ()=>{
   const rows = [['Field','Value','Unit','PDF page']];
   for (const [key,field] of Object.entries(current.metrics)) {
-    if (field) rows.push([labels[key],field.value,typeof field.value === 'number' ? 'GBP' : '',field.page]);
+    if (field) rows.push([labels[key],field.value,typeof field.value === 'number' ? 'GBP' : '',field.page ?? '']);
   }
   for (const row of current.balanceBreakdown ?? []) rows.push(['Balance breakdown — '+row.label,row.value,'GBP',row.page]);
   for (const rate of current.rates) rows.push([rate.label,rate.value,rate.basis ? '% per year ('+rate.basis+')' : '% per year',rate.page]);
