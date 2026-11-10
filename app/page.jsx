@@ -261,6 +261,13 @@ export default function Home() {
               <a href="#demo" className="report-button">Check my statement</a>
               <small>One PDF · Processed on your device</small>
             </section>
+            <section className="financial-support" aria-labelledby="financial-support-title">
+              <div>
+                <h2 id="financial-support-title">Worried about money or debt?</h2>
+                <p>If you’re struggling with bills or credit card payments, GOV.UK lists organisations that offer free, confidential and independent debt advice.</p>
+              </div>
+              <a className="report-button secondary" href="https://www.gov.uk/debt-advice">Find free debt advice on GOV.UK</a>
+            </section>
           </div>
         </main>
       </div>
