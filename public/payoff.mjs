@@ -1,9 +1,13 @@
 export const projectionLimit = 600;
 
-export function projectPayoff(balance, annualRate, payment) {
+export function monthlyInterestRate(annualRate, basis) {
+  return basis === 'effective' ? Math.pow(1 + annualRate / 100, 1 / 12) - 1 : annualRate / 1200;
+}
+
+export function projectPayoff(balance, annualRate, payment, basis) {
   let remaining = Math.round(balance * 100);
   const monthlyPayment = Math.round(payment * 100);
-  const monthlyRate = annualRate / 1200;
+  const monthlyRate = monthlyInterestRate(annualRate,basis);
   const balances = [remaining / 100];
   let interest = 0;
   if (monthlyPayment <= 0 || monthlyPayment <= Math.round(remaining * monthlyRate)) {
@@ -31,13 +35,13 @@ export function statementDay(value) {
   return date.getMonth() === month && date.getDate() === day ? date : null;
 }
 
-export function paymentForMonths(balance, annualRate, months) {
+export function paymentForMonths(balance, annualRate, months, basis) {
   const principal = Math.round(balance * 100);
   let low = 1;
-  let high = principal + Math.round(principal * annualRate / 1200);
+  let high = principal + Math.round(principal * monthlyInterestRate(annualRate,basis));
   while (low < high) {
     const middle = Math.floor((low + high) / 2);
-    const projection = projectPayoff(balance,annualRate,middle/100);
+    const projection = projectPayoff(balance,annualRate,middle/100,basis);
     if (projection.status === 'complete' && projection.months <= months) high = middle;
     else low = middle + 1;
   }

@@ -1,4 +1,4 @@
-const money = '(?:£\\s*)?((?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)\\.[0-9]{2})';
+const money = '(?:£\\s*)?((?:[0-9]{1,3}(?:,[0-9]{3})+|[0-9]+)\(?:\.[0-9]{2})?)';
 const date = '((?:[0-3]?\\d[ /.-](?:[01]?\\d|Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)[ /.-]20\\d{2}))';
 const find = (pages, pattern, convert = value=>value) => {
   const fields = new Map();
@@ -12,6 +12,8 @@ const find = (pages, pattern, convert = value=>value) => {
   }
   return [...fields.values()];
 };
+const closingLabel = '(?:your )?new balance|statement balance|closing balance';
+const groupedLabel = 'new transactions,? fees and charges';
 const balanceFields = [
   ['Previous balance','previous (?:statement )?balance|opening balance',1,true],
   ['New spending','(?:total )?purchases|new purchases|total spending',1,true],
@@ -21,7 +23,7 @@ const balanceFields = [
   ['Fees charged','fees charged(?: this (?:month|period))?|total fees(?: charged)?',1,false],
   ['Refunds','(?:total )?refunds',-1,false],
   ['Payments received','(?:total )?payments(?: received)?',-1,true],
-  ['Statement balance','statement balance|new balance|closing balance',1,true]
+  ['Statement balance',closingLabel,1,true]
 ];
 
 function findBalanceAmounts(pages,pattern,direction) {
@@ -30,7 +32,7 @@ function findBalanceAmounts(pages,pattern,direction) {
   const linePattern = new RegExp('^(?:'+pattern+')\\s*[:–]?\\s*'+credit+money+'(?:\\s+'+suffix+')?$','i');
   return pages.flatMap((lines,index)=>lines.flatMap(line=>{
     const match = linePattern.exec(line);
-    return match ? [{page:index+1,pence:direction*Number(match[1].replace(/[,.]/g,''))}] : [];
+    return match ? [{page:index+1,pence:direction*Math.round(Number(match[1].replaceAll(',',''))*100)}] : [];
   }));
 }
 
@@ -38,9 +40,9 @@ function uniqueAmounts(fields) {
   return [...new Map(fields.map(field=>[field.pence,field])).values()];
 }
 
-function balanceBreakdown(pages) {
+function balanceBreakdown(pages, fields = balanceFields) {
   const rows = [];
-  for (const [label,pattern,direction,required] of balanceFields) {
+  for (const [label,pattern,direction,required] of fields) {
     const matches = uniqueAmounts(findBalanceAmounts(pages,pattern,direction));
     if (matches.length > 1 || (required && matches.length === 0)) return null;
     if (matches.length) rows.push({label,...matches[0]});
@@ -52,6 +54,11 @@ function balanceBreakdown(pages) {
 }
 
 export function parseStatement(pages) {
+  const wrappedAmount = new RegExp('^(?:'+closingLabel+'|'+groupedLabel+')\\s*[:–-]?$', 'i');
+  const amountOnly = new RegExp('^£\\s*'+money+'(?:\\s+(?:DR|CR))?$', 'i');
+  pages = pages.map(lines => lines.flatMap((line,index) =>
+    wrappedAmount.test(line) && amountOnly.test(lines[index+1] ?? '')
+      ? [line,line+' '+lines[index+1]] : [line]));
   const conflicts = [];
   const unique = (key,fields) => {
     if (fields.length > 1) conflicts.push(key);
@@ -62,19 +69,43 @@ export function parseStatement(pages) {
     (value,sign)=>Number(value.replaceAll(',',''))*(sign?.toUpperCase() === 'CR' ? -1 : 1)));
   const dated = (key,labels) => unique(key,find(pages,new RegExp('^(?:'+labels+')\\s*[:–-]?\\s*'+date+'$','i')));
   const metrics = {
-    balance:amount('balance','statement balance|new balance|closing balance|total balance|outstanding balance'),
+    balance:amount('balance',closingLabel+'|total balance|outstanding balance'),
+    creditLimit:amount('creditLimit','(?:your )?credit limit'),
+    availableCredit:amount('availableCredit','available to spend|available credit'),
+    estimatedInterest:amount('estimatedInterest',"next month['’]s estimated interest|estimated interest(?: next month)?"),
     interest:amount('interest','interest charged(?: this (?:month|period))?|total interest(?: charged)?|interest this (?:month|period)'),
     fees:amount('fees','fees charged(?: this (?:month|period))?|total fees(?: charged)?'),
     minimum:amount('minimum','minimum payment(?: due|required| amount)?'),
-    due:dated('due','payment due(?: date| by)?|minimum payment due(?: date| by)?|payment to reach us by'),
+    due:dated('due','payment due(?: date| by)?|minimum payment due(?: date| by)?|payment to reach us by|to reach your account by'),
     statementDate:dated('statementDate','statement date|date of statement'),
     promoEnd:dated('promoEnd','(?:0%|promotional|promo)(?: interest)?(?: rate| offer)? (?:ends|end date|expiry date)')
   };
-  const rateLabels = {Purchases:'purchase(?:s)?|(?:standard )?purchase interest rate', 'Balance transfer':'balance transfers?(?: interest rate)?','Cash advances':'cash(?: advances?| withdrawals?)(?: interest rate)?'};
+  const rateLabels = {
+    Purchases:'purchase(?:s)?|(?:standard )?purchase interest rate',
+    'Balance transfer':'balance transfers?(?: and money transfers)?(?: interest rate)?',
+    'Cash advances':'cash(?: advances?| withdrawals?| transactions)(?: interest rate)?',
+    'Default fees':'default fees',
+  };
+  const percentage = '(\\d{1,2}(?:\\.\\d{1,4})?)\\s*%\\s*(?:p\\.?a\\.?|per annum|annual|a year)';
   const rates = Object.entries(rateLabels).flatMap(([label,pattern])=>{
-    const rate = find(pages,new RegExp('^(?:'+pattern+')\\s*[:–-]?\\s*(\\d{1,2}(?:\\.\\d{1,4})?)\\s*%\\s*(?:p\\.?a\\.?|per annum|annual|a year)$','i'));
-    if (rate.length > 1 && !conflicts.includes('rates')) conflicts.push('rates');
-    return rate.map(field=>({label,value:Number(field.value),page:field.page}));
+    const labelFirst = new RegExp('^(?:'+pattern+')\\s*[:–-]?\\s*'+percentage+'$', 'i');
+    const rateFirst = new RegExp('^'+percentage+'(?:\\s*\\(variable\\))?\\s+for\\s+(?:'+pattern+')(?:\\s*\\((effective|simple) rate\\))?$', 'i');
+    const found = new Map();
+    for (const [index,lines] of pages.entries()) {
+      for (const [row,line] of lines.entries()) {
+        const continuation = /^\((effective|simple) rate\)$/i.test(lines[row+1] ?? '');
+        const match = (continuation && rateFirst.exec(line+' '+lines[row+1])) || rateFirst.exec(line) || labelFirst.exec(line);
+        if (!match) continue;
+        const value = Number(match[1]);
+        const basis = match[2]?.toLowerCase();
+        const key = value+':'+(basis ?? '');
+        if (!found.has(key)) found.set(key,{label,value,page:index+1,...(basis && {basis})});
+      }
+    }
+    const explicit = new Set([...found.values()].filter(rate => rate.basis).map(rate => rate.value));
+    const distinct = [...found.values()].filter(rate => rate.basis || !explicit.has(rate.value));
+    if (distinct.length > 1 && label !== 'Default fees' && !conflicts.includes('rates')) conflicts.push('rates');
+    return distinct;
   });
   const opening = uniqueAmounts(findBalanceAmounts(pages,balanceFields[0][1],1));
   if (opening.length > 1) conflicts.push('opening');
@@ -87,7 +118,9 @@ export function parseStatement(pages) {
   if (payments.length > 1) conflicts.push('payment');
   const payment = payments.length === 1 && Number.isSafeInteger(payments[0].pence)
     ? {value:-payments[0].pence/100,page:payments[0].page} : null;
-  return {metrics,rates,payment,conflicts,balanceChange,balanceBreakdown:matchesClosing ? balanceBreakdown(pages) : null};
+  return {metrics,rates,payment,conflicts,balanceChange,balanceBreakdown:matchesClosing ? balanceBreakdown(pages) ?? balanceBreakdown(pages,[
+    balanceFields[0],['New transactions, fees and charges',groupedLabel,1,true],...balanceFields.slice(-2)
+  ]) : null};
 }
 export function pageLines(items) {
   const rows = [];
