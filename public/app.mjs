@@ -441,7 +441,7 @@ function renderRates(container,data) {
 
 function renderPurchaseExample(container,rate) {
   const example = node('section','','credit-usage purchase-cost');
-  const label = node('label','Purchase amount (£)');
+  const label = node('label','Purchase amount (£)','purchase-cost-amount');
   const input = node('input','');
   input.type = 'number';
   input.min = '0.01';
@@ -452,26 +452,30 @@ function renderPurchaseExample(container,rate) {
   const term = 12;
   const monthlyRate = monthlyInterestRate(rate.value,rate.basis);
   const result = node('div','');
-  result.setAttribute('aria-live','polite');
+  const summary = node('div','','purchase-cost-summary');
+  summary.setAttribute('aria-live','polite');
   const update = () => {
     if (!input.validity.valid || !(input.valueAsNumber > 0)) {
-      result.textContent = 'Enter a purchase amount to see an estimate.';
+      summary.textContent = 'Enter a purchase amount to see an estimate.';
+      result.replaceChildren(summary);
       return;
     }
     const amount = input.valueAsNumber;
     const payment = paymentForMonths(amount,rate.value,term,rate.basis);
     const plan = projectPayoff(amount,rate.value,payment,rate.basis);
-    const figures = node('dl','','credit-usage-figures');
-    figures.append(payoffMetric('Regular monthly payment',pounds.format(payment)),
-      payoffMetric('Estimated interest',pounds.format(plan.interest)),
-      payoffMetric('Estimated total to repay',pounds.format(plan.total)));
+    const figures = node('dl','','purchase-cost-figures');
+    const total = payoffMetric('Estimated total to repay',pounds.format(plan.total));
+    total.className = 'purchase-cost-total';
+    figures.append(total,payoffMetric('Regular monthly payment',pounds.format(payment)),
+      payoffMetric('Estimated interest',pounds.format(plan.interest)));
+    summary.replaceChildren(figures);
     const rows = plan.balances.slice(1).map((remaining,index) => {
       const opening = Math.round(plan.balances[index]*100);
       const interest = Math.round(opening*monthlyRate);
       const paid = opening+interest-Math.round(remaining*100);
       return [String(index+1),pounds.format(paid/100),pounds.format(interest/100),pounds.format(remaining)];
     });
-    result.replaceChildren(figures,comparisonTable('Monthly breakdown',
+    result.replaceChildren(summary,comparisonTable('Monthly breakdown',
       ['Month','Payment','Interest','Balance left'],rows,true));
   };
   input.addEventListener('input',update);
