@@ -30,8 +30,14 @@ export default function Home() {
                   <input type="file" id="file" accept=".pdf,application/pdf" hidden />
                   <p>Text-based PDFs · up to 15 MB and 30 pages</p>
                   <a href="#how-it-works">How do I find my statement?</a>
-                  <p><strong>Paying off more than one credit card?</strong> Start with one statement, then add the others. See which card could clear first and how much interest you could pay with the same monthly budget.</p>
                   <p id="status" role="status" />
+                </div>
+                <div className="hero-multi-card">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="15" height="10" rx="2" /><path d="M3 8h15m-9 9v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-6" /></svg>
+                  <div>
+                    <strong>Paying off more than one credit card?</strong>
+                    <p>Start with one statement, then add the others. See which card could clear first and how much interest you could pay on the same monthly budget.</p>
+                  </div>
                 </div>
               </div>
               <aside className="hero-benefits" aria-label="What you’ll get from your statement check">

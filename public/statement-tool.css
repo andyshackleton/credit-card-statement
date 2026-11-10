@@ -25,6 +25,10 @@ body > .marketing-offer-bar > span + span::before {margin-right:14px}
   padding:8px 10px;background:var(--paper);border-radius:6px;
 }
 .lc-hero .domain-entry a {font-size:13px}
+.hero-multi-card {display:flex;align-items:flex-start;gap:.75rem;max-width:34rem;margin-top:1rem;padding:.8rem 1rem;border:1px solid #d9bce666;border-radius:10px;background:#f7f0fb;color:#39214b}
+.hero-multi-card svg {width:1.35rem;height:1.35rem;flex:none;margin-top:.1rem;color:#67378a}
+.hero-multi-card strong {display:block;font-size:.95rem;line-height:1.35}
+.lc-home .lc-hero .hero-multi-card p {margin:.25rem 0 0;color:#523e5d;font-size:.875rem;line-height:1.45}
 #status:empty {display:none}
 #examples {align-items:center}
 .report-preview-intro .report-button {margin-top:.5rem}
