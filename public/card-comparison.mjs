@@ -1,4 +1,4 @@
-import {projectionLimit} from './payoff.mjs';
+import {projectionLimit,monthlyInterestRate} from './payoff.mjs';
 
 const cardNames = [
   [/\b(?:amex|american express)\b/i, 'American Express'],
@@ -37,14 +37,15 @@ export async function comparisonDetails(pages) {
 export function comparisonCard(report, number) {
   const {metrics, rates, conflicts, comparison} = report;
   const {balance, minimum, statementDate, promoEnd} = metrics;
-  const rate = rates[0];
+  const borrowingRates = rates.filter(rate => rate.label !== 'Default fees');
+  const rate = borrowingRates[0];
   const label = comparison?.name ? `${comparison.name} · Card ${number}` : `Card ${number}`;
   let reason = '';
   if (!balance || !minimum || !rate || conflicts.some(key => ['balance','minimum','rates'].includes(key))) {
     reason = 'We need a clear balance, minimum payment and annual interest rate.';
   } else if (balance.value <= 0 || minimum.value <= 0) {
     reason = 'The statement needs a positive balance and minimum payment.';
-  } else if (promoEnd || comparison?.promotional || rate.value === 0 || rates.some(item => item.value !== rate.value)) {
+  } else if (promoEnd || comparison?.promotional || rate.value === 0 || borrowingRates.some(item => monthlyInterestRate(item.value,item.basis) !== monthlyInterestRate(rate.value,rate.basis))) {
     reason = 'This statement shows promotional or different rates. This comparison uses one confirmed, fixed rate per card.';
   }
   return {label, balance, minimum, statementDate, rate, reason};
@@ -53,7 +54,7 @@ export function comparisonCard(report, number) {
 export function compareRepayments(cards, budget, method) {
   const monthlyBudget = pence(budget);
   const debts = cards.map(card => ({
-    balance: pence(card.balance.value), minimum: pence(card.minimum.value), rate: card.rate.value,
+    balance: pence(card.balance.value), minimum: pence(card.minimum.value), rate: monthlyInterestRate(card.rate.value,card.rate.basis),
     label: card.label, cleared: 0, firstPayment: 0,
   }));
   const minimum = debts.reduce((sum, debt) => sum + debt.minimum, 0);
@@ -63,7 +64,7 @@ export function compareRepayments(cards, budget, method) {
     let available = monthlyBudget;
     const active = debts.filter(debt => debt.balance > 0);
     for (const debt of active) {
-      const charge = Math.round(debt.balance * debt.rate / 1200);
+      const charge = Math.round(debt.balance * debt.rate);
       debt.balance += charge;
       interest += charge;
     }

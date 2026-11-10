@@ -1,12 +1,12 @@
 import {statementHash,comparisonDetails,comparisonCard,compareRepayments} from './card-comparison.mjs';
 import {parseStatement,pageLines} from './parser.mjs';
-import {projectPayoff,statementDay,paymentForMonths,projectionLimit} from './payoff.mjs';
+import {projectPayoff,statementDay,paymentForMonths,projectionLimit,monthlyInterestRate} from './payoff.mjs';
 
 const $ = id=>document.getElementById(id);
 const pounds = new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP'});
 const wholePounds = new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP',maximumFractionDigits:0});
 const paymentStep = 5;
-const labels = {balance:'Statement balance',interest:'Interest charged',fees:'Fees charged',minimum:'Minimum payment',due:'Payment due date',statementDate:'Statement date',promoEnd:'Promotional rate ends'};
+const labels = {balance:'Statement balance',creditLimit:'Credit limit',availableCredit:'Available to spend',estimatedInterest:'Next month’s estimated interest',interest:'Interest charged',fees:'Fees charged',minimum:'Minimum payment',due:'Payment due date',statementDate:'Statement date',promoEnd:'Promotional rate ends'};
 const example = parseStatement([
   ['Statement date 1 November 2026','Previous balance £2,150.00','Total purchases £595.60','Refunds £25.00 CR','Payments received £350.00 CR','Statement balance £2,400.00','Interest charged £29.40','Fees charged £0.00','Minimum payment £62.00','Payment due date 25 November 2026'],
   ['Purchases 24.9% p.a.','Balance transfer 0% p.a.','0% rate ends 31 March 2027']
@@ -64,7 +64,21 @@ function renderBalance(container,data) {
     panel.append(payment);
   }
   container.append(panel);
-  const costFigures = [['Interest charged',data.metrics.interest],['Fees charged',data.metrics.fees]];
+  const {creditLimit,availableCredit,estimatedInterest} = data.metrics;
+  if (creditLimit?.value > 0 && availableCredit?.value >= 0 && availableCredit.value <= creditLimit.value) {
+    const used = Math.round((creditLimit.value - availableCredit.value)*100)/100;
+    const usage = node('section','','credit-usage');
+    const figures = node('dl','','credit-usage-figures');
+    figures.append(payoffMetric('Credit used',pounds.format(used)),payoffMetric('Available to spend',format(availableCredit)));
+    const meter = node('meter','');
+    meter.max = creditLimit.value;
+    meter.value = used;
+    meter.setAttribute('aria-label','Credit used out of '+format(creditLimit));
+    meter.setAttribute('aria-valuetext',pounds.format(used)+' of '+format(creditLimit));
+    usage.append(node('h4','Credit limit usage'),figures,meter,node('small','Credit limit '+format(creditLimit)+' · '+(100*used/creditLimit.value).toFixed(1)+'% used · As shown on your statement'));
+    container.append(usage);
+  }
+  const costFigures = [['Interest charged',data.metrics.interest],['Fees charged',data.metrics.fees],['Next month’s estimated interest',estimatedInterest]];
   const costs = node('dl','','statement-costs');
   for (const [label,field] of costFigures) {
     if (!field) continue;
@@ -194,7 +208,11 @@ function renderPayoff(container,data,sample) {
   }
   panel.append(node('p','See how a different monthly payment could change your payoff date and total interest.','report-section-intro'));
   const recentPayment = data.payment?.value > 0 ? data.payment.value : undefined;
-  const singleRate = data.rates.length === 1 && !promoEnd && !data.conflicts.includes('promoEnd') ? data.rates[0] : null;
+  const borrowingRates = data.rates.filter(rate => rate.label !== 'Default fees');
+  const firstRate = borrowingRates[0];
+  const singleRate = firstRate && !promoEnd && !data.conflicts.some(key => key === 'promoEnd' || key === 'rates') &&
+    borrowingRates.every(rate => monthlyInterestRate(rate.value,rate.basis) === monthlyInterestRate(firstRate.value,firstRate.basis))
+    ? firstRate : null;
   const rate = sample ? 24.9 : stale ? undefined : singleRate?.value;
   const monthValue = day=>day.getFullYear()+'-'+String(day.getMonth()+1).padStart(2,'0');
   const currentMonth = monthValue(today);
@@ -285,29 +303,30 @@ function renderPayoff(container,data,sample) {
       return;
     }
     const annualRate = rateInput.valueAsNumber;
+    const basis = rateInput.readOnly && !sample ? singleRate?.basis : undefined;
     const balanceAmount = Math.round(balanceInput.valueAsNumber*100)/100;
     const usual = Math.round(baselineInput.valueAsNumber*100)/100;
     assumptions.textContent = [
-      pounds.format(balanceAmount)+' balance',annualRate+'% annual rate',
+      pounds.format(balanceAmount)+' balance',annualRate+'% annual rate'+(basis ? ' ('+basis+')' : ''),
       pounds.format(usual)+' planned monthly payment','Starts '+monthFormat.format(finishDate(1))
     ].join(' · ');
-    const baseline = projectPayoff(balanceAmount,annualRate,usual);
-    const maxPayment = paymentForMonths(balanceAmount,annualRate,1);
-    const minPayment = Math.min(maxPayment,Math.max(stale ? 0 : minimum?.value ?? 0,paymentForMonths(balanceAmount,annualRate,projectionLimit)));
+    const baseline = projectPayoff(balanceAmount,annualRate,usual,basis);
+    const maxPayment = paymentForMonths(balanceAmount,annualRate,1,basis);
+    const minPayment = Math.min(maxPayment,Math.max(stale ? 0 : minimum?.value ?? 0,paymentForMonths(balanceAmount,annualRate,projectionLimit,basis)));
     const minSliderPayment = Math.ceil(minPayment/paymentStep)*paymentStep;
     const maxSliderPayment = Math.ceil(maxPayment/paymentStep)*paymentStep;
-    const longest = projectPayoff(balanceAmount,annualRate,minPayment).months;
+    const longest = projectPayoff(balanceAmount,annualRate,minPayment,basis).months;
     const timeMode = ranges.time.radio.checked;
     if (timeMode && targetMonths !== undefined) {
       targetMonths = Math.min(longest,Math.max(1,targetMonths));
-      comparisonPayment = Math.max(minPayment,paymentForMonths(balanceAmount,annualRate,targetMonths));
+      comparisonPayment = Math.max(minPayment,paymentForMonths(balanceAmount,annualRate,targetMonths,basis));
     } else if (timeMode) {
       comparisonPayment = Math.min(maxSliderPayment,Math.max(minPayment,comparisonPayment ?? usual+25));
     } else {
       const roundedPayment = Math.round((comparisonPayment ?? usual+25)/paymentStep)*paymentStep;
       comparisonPayment = Math.min(maxSliderPayment,Math.max(minSliderPayment,roundedPayment));
     }
-    const comparison = projectPayoff(balanceAmount,annualRate,comparisonPayment);
+    const comparison = projectPayoff(balanceAmount,annualRate,comparisonPayment,basis);
     targetMonths = undefined;
     const payments = [usual,comparisonPayment];
     const results = [baseline,comparison];
@@ -467,12 +486,14 @@ function renderRates(container,data) {
     const icon = rate.label === 'Purchases' ? 'payment' : rate.label === 'Balance transfer' ? 'transfer' : 'interest';
     label.append(payoffIcon(icon),rate.label);
     const value = node('dd','');
-    value.append(node('strong',rate.value+'%'),node('span','per year'));
+    value.append(node('strong',rate.value+'%'),node('span',rate.basis ? rate.basis+' annual rate' : 'per year'));
     card.append(label,value,node('dd','PDF page '+rate.page,'statement-rate-source'));
     list.append(card);
   }
   if (list.childElementCount) container.append(list);
   else container.append(node('p','Annual rates unavailable in this PDF.','quiet'));
+  const purchases = data.rates.filter(rate => rate.label === 'Purchases');
+  if (purchases.length === 1) renderPurchaseExample(container,purchases[0]);
   const expiry = data.metrics.promoEnd;
   if (expiry) {
     const notice = node('p','','statement-rate-expiry');
@@ -481,6 +502,33 @@ function renderRates(container,data) {
     notice.append(payoffIcon('calendar'),text,node('small','PDF page '+expiry.page));
     container.append(notice);
   }
+}
+
+function renderPurchaseExample(container,rate) {
+  const example = node('section','','credit-usage purchase-cost');
+  const label = node('label','Purchase amount (£)');
+  const input = node('input','');
+  input.type = 'number';
+  input.min = '0.01';
+  input.max = '1000000';
+  input.step = '0.01';
+  input.value = '100';
+  label.append(input);
+  const result = node('p','');
+  result.setAttribute('aria-live','polite');
+  const update = () => {
+    if (!input.validity.valid || !(input.valueAsNumber > 0)) {
+      result.textContent = 'Enter a purchase amount to see an estimate.';
+      return;
+    }
+    const cost = input.valueAsNumber * monthlyInterestRate(rate.value,rate.basis);
+    result.textContent = 'About '+pounds.format(cost)+' in interest for one month.';
+  };
+  input.addEventListener('input',update);
+  update();
+  example.append(node('h4','What could a purchase cost in interest?'),label,result,
+    node('small','Uses the statement’s '+rate.value+'% annual purchase rate. Assumes interest applies and the full purchase amount remains outstanding for one month. Actual charges depend on your card terms and payment dates.'));
+  container.append(example);
 }
 
 function show(data, sample = false, scroll = true) {
@@ -814,6 +862,6 @@ $('csv').onclick = ()=>{
     if (field) rows.push([labels[key],field.value,typeof field.value === 'number' ? 'GBP' : '',field.page]);
   }
   for (const row of current.balanceBreakdown ?? []) rows.push(['Balance breakdown — '+row.label,row.value,'GBP',row.page]);
-  for (const rate of current.rates) rows.push([rate.label,rate.value,'% per year',rate.page]);
+  for (const rate of current.rates) rows.push([rate.label,rate.value,rate.basis ? '% per year ('+rate.basis+')' : '% per year',rate.page]);
   download(rows.map(row=>row.map(value=>'"'+String(value).replaceAll('"','""')+'"').join(',')).join('\r\n'),'text/csv;charset=utf-8','csv');
 };
