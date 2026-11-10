@@ -262,11 +262,14 @@ export default function Home() {
               <small>One PDF · Processed on your device</small>
             </section>
             <section className="financial-support" aria-labelledby="financial-support-title">
-              <div>
+              <div className="financial-support-copy">
+                <p className="financial-support-label">Financial support</p>
                 <h2 id="financial-support-title">Worried about money or debt?</h2>
-                <p>If you’re struggling with bills or credit card payments, GOV.UK lists organisations that offer free, confidential and independent debt advice.</p>
+                <p>If bills or credit card payments are becoming hard to manage, you can get free, confidential and independent debt advice.</p>
               </div>
-              <a className="report-button secondary" href="https://www.gov.uk/debt-advice">Find free debt advice on GOV.UK</a>
+              <a className="report-button" href="https://www.gov.uk/debt-advice">
+                Find free debt advice on GOV.UK <span aria-hidden="true">↗</span>
+              </a>
             </section>
           </div>
         </main>
