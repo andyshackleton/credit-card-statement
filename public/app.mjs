@@ -449,6 +449,8 @@ function renderPurchaseExample(container,rate) {
   input.step = '0.01';
   input.value = '1000';
   label.append(input);
+  const term = 12;
+  const monthlyRate = monthlyInterestRate(rate.value,rate.basis);
   const result = node('div','');
   result.setAttribute('aria-live','polite');
   const update = () => {
@@ -456,17 +458,26 @@ function renderPurchaseExample(container,rate) {
       result.textContent = 'Enter a purchase amount to see an estimate.';
       return;
     }
-    const principal = Math.round(input.valueAsNumber * 100);
-    const interest = Math.round(principal * monthlyInterestRate(rate.value,rate.basis));
+    const amount = input.valueAsNumber;
+    const payment = paymentForMonths(amount,rate.value,term,rate.basis);
+    const plan = projectPayoff(amount,rate.value,payment,rate.basis);
     const figures = node('dl','','credit-usage-figures');
-    figures.append(payoffMetric('Estimated interest for one month',pounds.format(interest/100)),
-      payoffMetric('Estimated total to repay',pounds.format((principal+interest)/100)));
-    result.replaceChildren(figures);
+    figures.append(payoffMetric('Regular monthly payment',pounds.format(payment)),
+      payoffMetric('Estimated interest',pounds.format(plan.interest)),
+      payoffMetric('Estimated total to repay',pounds.format(plan.total)));
+    const rows = plan.balances.slice(1).map((remaining,index) => {
+      const opening = Math.round(plan.balances[index]*100);
+      const interest = Math.round(opening*monthlyRate);
+      const paid = opening+interest-Math.round(remaining*100);
+      return [String(index+1),pounds.format(paid/100),pounds.format(interest/100),pounds.format(remaining)];
+    });
+    result.replaceChildren(figures,comparisonTable('Monthly breakdown',
+      ['Month','Payment','Interest','Balance left'],rows,true));
   };
   input.addEventListener('input',update);
   update();
-  example.append(node('h4','What could a purchase cost in interest?'),label,result,
-    node('small','Uses the statement’s '+rate.value+'% annual purchase rate. Assumes interest applies and the full purchase amount remains outstanding for one month, then is paid off in full. Actual charges depend on your card terms and payment dates.'));
+  example.append(node('h4','What could a purchase cost over 12 months?'),label,result,
+    node('small','Uses the statement’s '+rate.value+'% annual purchase rate. Assumes the rate stays the same, interest is added monthly, and there are no new purchases or fees. Payments are rounded to the penny, so the final payment may be smaller or a very small purchase may clear early. Actual charges depend on your card terms and payment dates.'));
   container.append(example);
 }
 
