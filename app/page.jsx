@@ -78,21 +78,29 @@ export default function Home() {
               <p id="statement-issues" className="statement-issues" hidden />
               <div id="balance-breakdown" />
               <section id="statement-insights" aria-label="Statement insights" />
-              <div id="payoff" />
-              <details id="card-comparison" className="report-details" hidden>
-                <summary>Compare with another card</summary>
-                <p>Add one recent PDF statement per card. Confirm the figures below, then compare two ways of dividing one monthly payment. Your statements stay on this device.</p>
-                <button type="button" id="choose-comparison-file" className="report-button secondary">Add another statement</button>
-                <input type="file" id="comparison-file" accept=".pdf,application/pdf" hidden />
-                <p id="comparison-status" role="status"></p>
-                <div id="comparison-cards"></div>
-                <form id="comparison-form" hidden>
-                  <label htmlFor="comparison-budget">Total monthly budget for these cards (£)</label>
-                  <input id="comparison-budget" type="number" min="0.01" max="1000000" step="0.01" required />
-                  <button className="report-button" type="submit">Compare repayments</button>
-                </form>
-                <div id="comparison-result" aria-live="polite"></div>
-              </details>
+              <section id="payoff" aria-labelledby="payoff-title">
+                <h3 id="payoff-title" className="report-section-heading" data-step="03"><span className="report-section-number" aria-hidden="true">03</span><span>Compare repayment plans</span></h3>
+                <div id="repayment-overview" />
+                <details className="repayment-plan">
+                  <summary>Repayment · one card</summary>
+                  <div id="single-repayment" />
+                </details>
+                <details className="repayment-plan">
+                  <summary>Snowball · smallest balance first</summary>
+                  <div id="snowball-plan" />
+                </details>
+                <details className="repayment-plan">
+                  <summary>Avalanche · highest interest first</summary>
+                  <div id="avalanche-plan" />
+                </details>
+                <div id="card-comparison" hidden>
+                  <p>Add one recent PDF per card to compare Snowball and Avalanche using the same monthly budget. Your statements stay on this device.</p>
+                  <button type="button" id="choose-comparison-file" className="report-button secondary">Add another statement</button>
+                  <input type="file" id="comparison-file" accept=".pdf,application/pdf" hidden />
+                  <p id="comparison-status" role="status"></p>
+                  <div id="comparison-cards"></div>
+                </div>
+              </section>
               <details id="report-details" className="report-details">
                 <summary>Statement figures and downloads</summary>
                 <p className="report-figure-help">Page numbers show where each figure came from. For anything marked “Not identified”, check your PDF or ask your card provider.</p>

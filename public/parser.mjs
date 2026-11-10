@@ -54,7 +54,7 @@ function balanceBreakdown(pages, fields = balanceFields) {
 }
 
 export function parseStatement(pages) {
-  const wrappedAmount = new RegExp('^(?:'+closingLabel+'|'+groupedLabel+')\\s*[:–-]?$', 'i');
+  const wrappedAmount = new RegExp('^(?:'+balanceFields.map(field => field[1]).join('|')+'|'+groupedLabel+'|(?:your )?credit limit|available to spend|available credit|minimum payment(?: due|required| amount)?|next month[\x27’]s estimated interest)\\s*[:–-]?$', 'i');
   const amountOnly = new RegExp('^£\\s*'+money+'(?:\\s+(?:DR|CR))?$', 'i');
   pages = pages.map(lines => lines.flatMap((line,index) =>
     wrappedAmount.test(line) && amountOnly.test(lines[index+1] ?? '')
@@ -71,7 +71,7 @@ export function parseStatement(pages) {
   const metrics = {
     balance:amount('balance',closingLabel+'|total balance|outstanding balance'),
     creditLimit:amount('creditLimit','(?:your )?credit limit'),
-    availableCredit:amount('availableCredit','available to spend|available credit'),
+    availableCredit:amount('availableCredit','(?:your )?available to spend|(?:your )?available credit(?: to spend)?'),
     estimatedInterest:amount('estimatedInterest',"next month['’]s estimated interest|estimated interest(?: next month)?"),
     interest:amount('interest','interest charged(?: this (?:month|period))?|total interest(?: charged)?|interest this (?:month|period)'),
     fees:amount('fees','fees charged(?: this (?:month|period))?|total fees(?: charged)?'),
@@ -118,6 +118,15 @@ export function parseStatement(pages) {
   if (payments.length > 1) conflicts.push('payment');
   const payment = payments.length === 1 && Number.isSafeInteger(payments[0].pence)
     ? {value:-payments[0].pence/100,page:payments[0].page} : null;
+  metrics.previousBalance = opening.length === 1 ? {value:opening[0].pence/100,page:opening[0].page} : null;
+  metrics.paymentsReceived = payment;
+  metrics.groupedCharges = amount('groupedCharges',groupedLabel);
+  if (!metrics.availableCredit && !conflicts.includes('availableCredit') && metrics.creditLimit?.value > 0 && metrics.balance) {
+    metrics.availableCredit = {
+      value:Math.round((metrics.creditLimit.value - metrics.balance.value)*100)/100,
+      derived:true,
+    };
+  }
   return {metrics,rates,payment,conflicts,balanceChange,balanceBreakdown:matchesClosing ? balanceBreakdown(pages) ?? balanceBreakdown(pages,[
     balanceFields[0],['New transactions, fees and charges',groupedLabel,1,true],...balanceFields.slice(-2)
   ]) : null};
