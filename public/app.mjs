@@ -447,22 +447,26 @@ function renderPurchaseExample(container,rate) {
   input.min = '0.01';
   input.max = '1000000';
   input.step = '0.01';
-  input.value = '100';
+  input.value = '1000';
   label.append(input);
-  const result = node('p','');
+  const result = node('div','');
   result.setAttribute('aria-live','polite');
   const update = () => {
     if (!input.validity.valid || !(input.valueAsNumber > 0)) {
       result.textContent = 'Enter a purchase amount to see an estimate.';
       return;
     }
-    const cost = input.valueAsNumber * monthlyInterestRate(rate.value,rate.basis);
-    result.textContent = 'About '+pounds.format(cost)+' in interest for one month.';
+    const principal = Math.round(input.valueAsNumber * 100);
+    const interest = Math.round(principal * monthlyInterestRate(rate.value,rate.basis));
+    const figures = node('dl','','credit-usage-figures');
+    figures.append(payoffMetric('Estimated interest for one month',pounds.format(interest/100)),
+      payoffMetric('Estimated total to repay',pounds.format((principal+interest)/100)));
+    result.replaceChildren(figures);
   };
   input.addEventListener('input',update);
   update();
   example.append(node('h4','What could a purchase cost in interest?'),label,result,
-    node('small','Uses the statement’s '+rate.value+'% annual purchase rate. Assumes interest applies and the full purchase amount remains outstanding for one month. Actual charges depend on your card terms and payment dates.'));
+    node('small','Uses the statement’s '+rate.value+'% annual purchase rate. Assumes interest applies and the full purchase amount remains outstanding for one month, then is paid off in full. Actual charges depend on your card terms and payment dates.'));
   container.append(example);
 }
 
