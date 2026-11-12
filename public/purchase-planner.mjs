@@ -1,7 +1,7 @@
 import {projectPayoff, paymentForMonths} from './payoff.mjs';
 
 const form = document.getElementById('purchase-planner');
-const {amount, amountSlider, rate, duration} = form.elements;
+const {amount, rate, duration} = form.elements;
 const summary = form.querySelector('.purchase-cost-figures');
 const status = document.getElementById('purchase-status');
 const total = document.getElementById('purchase-total');
@@ -22,7 +22,6 @@ function updateEstimate() {
   const annualRate = rate.valueAsNumber;
   durationValue.textContent = months + (months === 1 ? ' month' : ' months');
   duration.setAttribute('aria-valuetext', durationValue.textContent);
-  amountSlider.setAttribute('aria-valuetext', pounds.format(amountSlider.valueAsNumber));
   if (!amount.validity.valid || !Number.isFinite(purchaseCost)) {
     showStatus('Enter a purchase cost between £50 and £20,000 in whole pounds.');
     return;
@@ -40,10 +39,6 @@ function updateEstimate() {
   showStatus('');
 }
 
-form.addEventListener('input', event => {
-  if (event.target === amountSlider) amount.value = amountSlider.value;
-  if (event.target === amount && amount.validity.valid) amountSlider.value = amount.value;
-  updateEstimate();
-});
+form.addEventListener('input', updateEstimate);
 form.addEventListener('submit', event => event.preventDefault());
 updateEstimate();
