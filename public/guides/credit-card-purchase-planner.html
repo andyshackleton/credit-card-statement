@@ -27,10 +27,12 @@
         <h2 id="purchase-planner-title">Credit card purchase planner</h2>
         <form id="purchase-planner">
           <div class="purchase-planner-inputs">
-            <label>
-              <span>Purchase cost <strong id="purchase-amount-value">£2,000</strong></span>
-              <input name="amount" type="range" min="50" max="20000" step="50" value="2000">
-            </label>
+            <div>
+              <label>Purchase cost (£)
+                <input name="amount" type="number" inputmode="numeric" min="50" max="20000" step="1" value="2000" required>
+              </label>
+              <input name="amountSlider" type="range" min="50" max="20000" step="1" value="2000" aria-label="Adjust purchase cost">
+            </div>
             <label>
               <span>Repayment duration <strong id="purchase-duration-value">12 months</strong></span>
               <input name="duration" type="range" min="1" max="60" step="1" value="12">
