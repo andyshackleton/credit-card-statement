@@ -21,7 +21,7 @@
 
 .purchase-planner-inputs {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1rem}
 .purchase-planner-inputs label {display:flex;flex-direction:column;justify-content:space-between;gap:.4rem;font-weight:700}
-.purchase-planner-inputs input,.purchase-planner-inputs select {width:100%;box-sizing:border-box;padding:.65rem .75rem;border:1px solid #b6afbc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+.purchase-planner-inputs input[type=number] {width:100%;box-sizing:border-box;padding:.65rem .75rem;border:1px solid #b6afbc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
 .purchase-planner .purchase-cost-figures[hidden] {display:none}
 .purchase-planner .purchase-cost-figures dd {margin:.25rem 0 0}
 
@@ -36,3 +36,7 @@
 .interest-timeline-track::after {content:"";position:absolute;inset-block:-.2rem;inset-inline-start:54.5455%;border-inline-start:2px solid #332140}
 .interest-timeline-axis {position:relative;display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem}
 .interest-timeline-axis span:nth-child(2) {position:absolute;inset-inline-start:54.5455%;transform:translateX(-50%)}
+
+.purchase-planner-inputs input[type=range] {width:100%;margin:.5rem 0;accent-color:#774792}
+.purchase-planner-inputs label > span {display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+.purchase-planner-inputs label strong {color:#54316c;font-variant-numeric:tabular-nums}

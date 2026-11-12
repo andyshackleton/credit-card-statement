@@ -1,12 +1,14 @@
-import {projectPayoff, projectionLimit} from './payoff.mjs';
+import {projectPayoff, paymentForMonths} from './payoff.mjs';
 
 const form = document.getElementById('purchase-planner');
-const {amount, rate, basis, payment} = form.elements;
+const {amount, rate, duration} = form.elements;
 const summary = form.querySelector('.purchase-cost-figures');
 const status = document.getElementById('purchase-status');
 const total = document.getElementById('purchase-total');
 const interest = document.getElementById('purchase-interest');
-const term = document.getElementById('purchase-term');
+const monthlyPayment = document.getElementById('purchase-payment');
+const amountValue = document.getElementById('purchase-amount-value');
+const durationValue = document.getElementById('purchase-duration-value');
 const pounds = new Intl.NumberFormat('en-GB', {style:'currency', currency:'GBP'});
 
 function showStatus(message) {
@@ -16,24 +18,23 @@ function showStatus(message) {
 }
 
 function updateEstimate() {
-  if (![amount, rate, payment].every(field => field.validity.valid && Number.isFinite(field.valueAsNumber))) {
-    showStatus('Enter a valid purchase cost, rate and monthly payment to see an estimate.');
+  const purchaseCost = amount.valueAsNumber;
+  const months = duration.valueAsNumber;
+  const annualRate = rate.valueAsNumber;
+  amountValue.textContent = pounds.format(purchaseCost).replace(/\.00$/, '');
+  durationValue.textContent = months + (months === 1 ? ' month' : ' months');
+  amount.setAttribute('aria-valuetext', amountValue.textContent);
+  duration.setAttribute('aria-valuetext', durationValue.textContent);
+  if (!rate.validity.valid || !Number.isFinite(annualRate)) {
+    showStatus('Enter a valid annual purchase rate to see an estimate.');
     return;
   }
 
-  const estimate = projectPayoff(amount.valueAsNumber, rate.valueAsNumber, payment.valueAsNumber, basis.value);
-  if (estimate.status === 'no-progress') {
-    showStatus('This monthly payment would leave the balance unchanged or growing in this estimate.');
-    return;
-  }
-  if (estimate.status === 'beyond-limit') {
-    showStatus('This payment would take longer than ' + projectionLimit / 12 + ' years in this estimate.');
-    return;
-  }
-
+  const payment = paymentForMonths(purchaseCost, annualRate, months, 'effective');
+  const estimate = projectPayoff(purchaseCost, annualRate, payment, 'effective');
   total.textContent = pounds.format(estimate.total);
   interest.textContent = pounds.format(estimate.interest);
-  term.textContent = estimate.months + (estimate.months === 1 ? ' month' : ' months');
+  monthlyPayment.textContent = pounds.format(payment);
   showStatus('');
 }
 

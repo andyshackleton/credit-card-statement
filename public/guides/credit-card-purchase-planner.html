@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Credit Card Purchase Planner | Statement Check</title>
-  <meta name="description" content="Estimate what a holiday or other large purchase could cost on a UK credit card. Change your monthly payment to compare interest, total cost and time to repay.">
+  <meta name="description" content="Estimate what a holiday or other large purchase could cost on a UK credit card. Adjust the purchase cost and repayment term to compare monthly payments, interest and total cost.">
   <link rel="canonical" href="https://creditcardstatement.co.uk/guides/credit-card-purchase-planner.html">
   <link rel="icon" href="/favicon.png">
   <link rel="stylesheet" href="/style.css">
@@ -27,28 +27,24 @@
         <h2 id="purchase-planner-title">Credit card purchase planner</h2>
         <form id="purchase-planner">
           <div class="purchase-planner-inputs">
-            <label>Purchase cost (£)
-              <input name="amount" type="number" inputmode="decimal" min="0.01" max="1000000" step="0.01" value="2000" required>
+            <label>
+              <span>Purchase cost <strong id="purchase-amount-value">£2,000</strong></span>
+              <input name="amount" type="range" min="50" max="20000" step="50" value="2000">
             </label>
-            <label>Standard annual purchase rate (%)
-              <input name="rate" type="number" inputmode="decimal" min="0" max="100" step="any" value="27.06" required>
+            <label>
+              <span>Repayment duration <strong id="purchase-duration-value">12 months</strong></span>
+              <input name="duration" type="range" min="1" max="60" step="1" value="12">
             </label>
-            <label>Rate type
-              <select name="basis" aria-describedby="purchase-rate-hint">
-                <option value="effective">Effective annual rate</option>
-                <option value="simple">Simple annual rate</option>
-              </select>
-            </label>
-            <label>Monthly payment (£)
-              <input name="payment" type="number" inputmode="decimal" min="0.01" max="1000000" step="0.01" value="200" required>
+            <label>Annual purchase rate (%)
+              <input name="rate" type="number" inputmode="decimal" min="0" max="100" step="any" value="27.06" required aria-describedby="purchase-rate-hint">
             </label>
           </div>
-          <p id="purchase-rate-hint">Use the purchase rate shown on your statement and select the rate type as labelled. Results update as you change the figures.</p>
+          <p id="purchase-rate-hint">Use the effective annual rate for purchases shown on your statement. Results update as you move either slider.</p>
           <div id="purchase-estimate" aria-live="polite">
             <dl class="purchase-cost-figures" hidden>
               <div class="purchase-cost-total"><dt>Estimated total to repay</dt><dd id="purchase-total"></dd></div>
               <div><dt>Estimated interest</dt><dd id="purchase-interest"></dd></div>
-              <div><dt>Time to repay</dt><dd id="purchase-term"></dd></div>
+              <div><dt>Estimated monthly payment</dt><dd id="purchase-payment"></dd></div>
             </dl>
             <p id="purchase-status" hidden></p>
           </div>
@@ -57,7 +53,7 @@
         <p class="bank-rate-note">This estimate assumes interest applies from the first month, a fixed rate and payment, no existing balance, and no new spending or fees. It adds interest monthly and excludes any interest-free days. <a href="/guides/credit-card-interest-free-days.html">See how interest-free days work</a>. Your provider’s actual charges can vary with payment dates and card terms.</p>
       </section>
       <h2>Look at the cost as well as the monthly payment</h2>
-      <p>Try £200 and £300 a month on the same £2,000 holiday. Compare the total interest and the time each payment would take to clear the balance. The final payment can be smaller because the planner stops once the balance reaches zero.</p>
+      <p>Try 12 and 24 months on the same £2,000 holiday. Compare the monthly payment and total interest for each duration. The final payment can be smaller because the planner stops once the balance reaches zero.</p>
       <h2>When paying by credit card can make sense</h2>
       <p>Section 75 can protect eligible purchases costing more than £100 and up to £30,000 if the supplier breaches the contract or misrepresents the purchase. In some cases, paying just the deposit by credit card can qualify. <a href="https://www.moneyhelper.org.uk/en/everyday-money/credit/how-youre-protected-when-you-pay-by-card.html">Check MoneyHelper’s guidance on holiday bookings and Section 75</a>.</p>
       <h2>What to weigh up if you spread the cost</h2>
