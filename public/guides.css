@@ -18,3 +18,9 @@
 .bank-rate-inputs input {width:100%;box-sizing:border-box;padding:.65rem .75rem;border:1px solid #b6afbc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
 .bank-rate-result {display:block;margin-top:1rem;padding:1rem;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font-size:1.15rem;font-weight:750}
 .bank-rate-note {margin-bottom:0;color:var(--muted)}
+
+.purchase-planner-inputs {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:1rem}
+.purchase-planner-inputs label {display:flex;flex-direction:column;justify-content:space-between;gap:.4rem;font-weight:700}
+.purchase-planner-inputs input,.purchase-planner-inputs select {width:100%;box-sizing:border-box;padding:.65rem .75rem;border:1px solid #b6afbc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
+.purchase-planner .purchase-cost-figures[hidden] {display:none}
+.purchase-planner .purchase-cost-figures dd {margin:.25rem 0 0}

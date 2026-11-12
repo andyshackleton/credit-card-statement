@@ -245,6 +245,7 @@ export default function Home() {
                     <li><a href="/guides/why-interest-on-a-zero-percent-credit-card.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2m6-2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg><span>Why am I paying interest on my 0% credit card?</span></a></li>
                     <li><a href="/guides/how-to-read-a-uk-credit-card-statement.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6m-6 4h6" /></svg><span>How to read a UK credit card statement</span></a></li>
                     <li><a href="/guides/bank-rate-credit-card-interest.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5-5 4 3 7-8m-5 0h5v5" /></svg><span>Does the Bank of England base rate affect credit cards?</span></a></li>
+                    <li><a href="/guides/credit-card-purchase-planner.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5-5 4 3 7-8m-5 0h5v5" /></svg><span>What could a big purchase cost on your credit card?</span></a></li>
                   </ul>
                 </div>
                 <div>
@@ -283,8 +284,10 @@ export default function Home() {
               <p>See what changed on your UK credit card and compare how long it could take to clear the balance.</p>
             </div>
             <nav aria-labelledby="footer-tool">
-              <h2 id="footer-tool">Statement check</h2>
-              <a href="#demo">Check my statement</a>
+              <h2 id="footer-tool">Tools</h2>
+              <a href="#demo">Statement checker</a>
+              <a href="/guides/bank-rate-credit-card-interest.html#bank-rate-title">Standard rate change calculator</a>
+              <a href="/guides/credit-card-purchase-planner.html#purchase-planner-title">Credit card purchase planner</a>
               <a href="#examples" data-open-sample="">Sample report</a>
               <a href="#how-it-works">Find my statement</a>
             </nav>

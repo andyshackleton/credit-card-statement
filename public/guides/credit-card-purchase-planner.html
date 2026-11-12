@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Credit Card Purchase Planner | Statement Check</title>
+  <meta name="description" content="Estimate what a holiday or other large purchase could cost on a UK credit card. Change your monthly payment to compare interest, total cost and time to repay.">
+  <link rel="canonical" href="https://creditcardstatement.co.uk/guides/credit-card-purchase-planner.html">
+  <link rel="icon" href="/favicon.png">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/statement-tool.css">
+  <link rel="stylesheet" href="/guides.css">
+  <script type="module" src="/purchase-planner.mjs"></script>
+</head>
+<body>
+<div class="report-site">
+  <header class="report-header">
+    <a class="report-brand" href="/" aria-label="Statement Check home"><img class="statement-logo" src="/statement-check-logo.webp" alt="" width="900" height="123"></a>
+    <a href="/#guides">All guides</a>
+  </header>
+  <main class="statement-guide">
+    <article>
+      <p class="report-eyebrow">Credit card tools</p>
+      <h1>What could a big purchase cost on your credit card?</h1>
+      <p>Planning a holiday or another large purchase? See how long it could take to repay and what interest could add to the price. Start with the example or enter your own figures.</p>
+      <section class="guide-cta purchase-planner" aria-labelledby="purchase-planner-title">
+        <h2 id="purchase-planner-title">Credit card purchase planner</h2>
+        <form id="purchase-planner">
+          <div class="purchase-planner-inputs">
+            <label>Purchase cost (£)
+              <input name="amount" type="number" inputmode="decimal" min="0.01" max="1000000" step="0.01" value="2000" required>
+            </label>
+            <label>Standard annual purchase rate (%)
+              <input name="rate" type="number" inputmode="decimal" min="0" max="100" step="any" value="27.06" required>
+            </label>
+            <label>Rate type
+              <select name="basis" aria-describedby="purchase-rate-hint">
+                <option value="effective">Effective annual rate</option>
+                <option value="simple">Simple annual rate</option>
+              </select>
+            </label>
+            <label>Monthly payment (£)
+              <input name="payment" type="number" inputmode="decimal" min="0.01" max="1000000" step="0.01" value="200" required>
+            </label>
+          </div>
+          <p id="purchase-rate-hint">Use the purchase rate shown on your statement and select the rate type as labelled. Results update as you change the figures.</p>
+          <div id="purchase-estimate" aria-live="polite">
+            <dl class="purchase-cost-figures" hidden>
+              <div class="purchase-cost-total"><dt>Estimated total to repay</dt><dd id="purchase-total"></dd></div>
+              <div><dt>Estimated interest</dt><dd id="purchase-interest"></dd></div>
+              <div><dt>Time to repay</dt><dd id="purchase-term"></dd></div>
+            </dl>
+            <p id="purchase-status" hidden></p>
+          </div>
+        </form>
+        <noscript><p>Enable JavaScript to use the planner.</p></noscript>
+        <p class="bank-rate-note">This estimate assumes interest applies from the first month, a fixed rate and payment, no existing balance, and no new spending or fees. It adds interest monthly. Your provider’s actual charges can vary with payment dates and card terms.</p>
+      </section>
+      <h2>Look at the cost as well as the monthly payment</h2>
+      <p>Try £200 and £300 a month on the same £2,000 holiday. Compare the total interest and the time each payment would take to clear the balance. The final payment can be smaller because the planner stops once the balance reaches zero.</p>
+      <h2>Check your statement before using the estimate</h2>
+      <p>Your statement shows the minimum payment and due date. Use those figures to check any payment you model. If your purchase qualifies for an interest-free period and you pay the required balance in full by the due date, the purchase may cost less than this estimate.</p>
+      <p><a href="/guides/credit-card-apr-and-interest-charged.html">Find your purchase rate on your statement</a> or <a href="/">check a statement PDF</a>.</p>
+      <h2>Source</h2>
+      <p><a href="https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards">MoneyHelper’s guide to credit card statements and interest</a>.</p>
+    </article>
+  </main>
+</div>
+</body>
+</html>
