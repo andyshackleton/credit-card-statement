@@ -24,3 +24,15 @@
 .purchase-planner-inputs input,.purchase-planner-inputs select {width:100%;box-sizing:border-box;padding:.65rem .75rem;border:1px solid #b6afbc;border-radius:8px;background:#fff;color:var(--ink);font:inherit}
 .purchase-planner .purchase-cost-figures[hidden] {display:none}
 .purchase-planner .purchase-cost-figures dd {margin:.25rem 0 0}
+
+.interest-timeline {margin:1.5rem 0;padding:clamp(1rem,4vw,1.75rem);border:1px solid var(--line);border-radius:12px;background:#faf6fc}
+.interest-timeline figcaption {margin-bottom:1rem}
+.interest-timeline figcaption > strong {font-size:1.15rem}
+.interest-timeline figcaption p {margin:.35rem 0 0}
+.interest-timeline-label {display:flex;justify-content:space-between;gap:.5rem;font-size:.9rem}
+.interest-timeline-track {position:relative;height:.65rem;margin:.35rem 0 .85rem;border-radius:999px;background:#e9e0ef}
+.interest-timeline-track span {position:absolute;inset:0;border-radius:inherit;background:#774792}
+.interest-timeline-short span {inset-inline-start:52.7273%}
+.interest-timeline-track::after {content:"";position:absolute;inset-block:-.2rem;inset-inline-start:54.5455%;border-inline-start:2px solid #332140}
+.interest-timeline-axis {position:relative;display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem}
+.interest-timeline-axis span:nth-child(2) {position:absolute;inset-inline-start:54.5455%;transform:translateX(-50%)}
