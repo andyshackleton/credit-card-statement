@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Credit Card Purchase Planner | Statement Check</title>
-  <meta name="description" content="Estimate what a holiday or other large purchase could cost on a UK credit card. Adjust the purchase cost and repayment term to compare monthly payments, interest and total cost.">
+  <meta name="description" content="Estimate what a holiday or other large purchase could cost on a UK credit card. Enter the purchase cost and adjust the repayment term to compare monthly payments, interest and total cost.">
   <link rel="canonical" href="https://creditcardstatement.co.uk/guides/credit-card-purchase-planner.html">
   <link rel="icon" href="/favicon.png">
   <link rel="stylesheet" href="/style.css">
@@ -27,12 +27,9 @@
         <h2 id="purchase-planner-title">Credit card purchase planner</h2>
         <form id="purchase-planner">
           <div class="purchase-planner-inputs">
-            <div>
-              <label>Purchase cost (£)
-                <input name="amount" type="number" inputmode="numeric" min="50" max="20000" step="1" value="2000" required>
-              </label>
-              <input name="amountSlider" type="range" min="50" max="20000" step="1" value="2000" aria-label="Adjust purchase cost">
-            </div>
+            <label>Purchase cost (£)
+              <input name="amount" type="number" inputmode="numeric" min="50" max="20000" step="1" value="2000" required>
+            </label>
             <label>
               <span>Repayment duration <strong id="purchase-duration-value">12 months</strong></span>
               <input name="duration" type="range" min="1" max="60" step="1" value="12">
@@ -41,7 +38,7 @@
               <input name="rate" type="number" inputmode="decimal" min="0" max="100" step="any" value="27.06" required aria-describedby="purchase-rate-hint">
             </label>
           </div>
-          <p id="purchase-rate-hint">Use the effective annual rate for purchases shown on your statement. Results update as you move either slider.</p>
+          <p id="purchase-rate-hint">Use the effective annual rate for purchases shown on your statement. Results update as you change the figures.</p>
           <div id="purchase-estimate" aria-live="polite">
             <dl class="purchase-cost-figures" hidden>
               <div class="purchase-cost-total"><dt>Estimated total to repay</dt><dd id="purchase-total"></dd></div>
