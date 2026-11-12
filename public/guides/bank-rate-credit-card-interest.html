@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Does the Bank of England base rate affect credit cards? | Statement Check</title>
+  <meta name="description" content="Find out which UK credit card rates can change when Bank Rate moves. Estimate the monthly interest change on your balance with a free calculator.">
+  <link rel="canonical" href="https://creditcardstatement.co.uk/guides/bank-rate-credit-card-interest.html">
+  <link rel="icon" href="/favicon.png">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/statement-tool.css">
+  <link rel="stylesheet" href="/guides.css">
+  <script type="module" src="/bank-rate-calculator.mjs"></script>
+</head>
+<body>
+<div class="report-site">
+  <header class="report-header">
+    <a class="report-brand" href="/" aria-label="Statement Check home"><img class="statement-logo" src="/statement-check-logo.webp" alt="" width="900" height="123"></a>
+    <a href="/#guides">All guides</a>
+  </header>
+  <main class="statement-guide">
+    <article>
+      <p class="report-eyebrow">Credit card interest</p>
+      <h1>Does the Bank of England base rate affect credit cards?</h1>
+      <p>On 5 November 2026, the Bank of England announced that Bank Rate had risen from <strong>3.75% to 4.00%</strong>. Some credit cards have standard rates that move with Bank Rate. If your provider has told you that your card’s rate changed, the difference in pounds depends on how much of your balance is charged at that rate.</p>
+
+      <section class="guide-cta bank-rate-calculator" aria-labelledby="bank-rate-title">
+        <h2 id="bank-rate-title">Estimate your monthly interest change</h2>
+        <p>The example uses a £1,000 interest-bearing balance and a 0.25 percentage point increase. Change either figure to match your card.</p>
+        <form id="bank-rate-form">
+          <div class="bank-rate-inputs">
+            <label>Balance affected by the rate change (£)
+              <input name="balance" type="number" inputmode="decimal" min="0" max="1000000000" step="0.01" value="1000" required>
+            </label>
+            <label>Change in your card’s simple annual rate (percentage points)
+              <input name="rateChange" type="number" min="-100" max="100" step="0.0001" value="0.25" required aria-describedby="bank-rate-hint">
+            </label>
+          </div>
+          <p id="bank-rate-hint">Enter a positive number for an increase or a negative number for a decrease. For a rate moving from 24% to 24.25%, enter 0.25.</p>
+          <button class="report-button" type="submit">Calculate interest change</button>
+          <output class="bank-rate-result" name="estimate" aria-live="polite">About £0.21 more in interest per month</output>
+        </form>
+        <noscript><p>Enable JavaScript to recalculate. For a rough monthly estimate, multiply the affected balance by the rate change and divide by 1,200.</p></noscript>
+        <p class="bank-rate-note">This estimates the change in interest, with the balance held steady for a month and no compounding. Your minimum payment is shown on your statement. The amount actually charged can vary with your balance, payment dates and card terms.</p>
+      </section>
+
+      <h2>Check which rate applies to your balance</h2>
+      <p>Check the notice from your own card provider for the new rate and the date it takes effect. A change in Bank Rate may pass through to a linked standard rate, subject to your card terms and any cap or floor. Use the actual change in the <strong>simple annual rate</strong> for the balance you’re checking. If different rates apply to purchases, transfers or cash withdrawals, calculate each affected portion separately.</p>
+
+      <h2>What if some of the balance is on a promotional rate?</h2>
+      <p>Check when the offer ends and what rate applies afterwards. Halifax, for example, says a Bank Rate change leaves its promotional balances unaffected while the offer is active. If £700 of a £1,000 balance is on an unchanged promotion and £300 is charged at the rate that rose, enter £300. A 0.25 percentage point rise would add about 6p a month in that example.</p>
+
+      <h2>Where to find the figures</h2>
+      <p>Your banking app or online account can show your current balance. Check your latest statement and the rate-change notice for the rate that applies, the interest charged and the payment due. If the statement gives only an effective rate or APR, check the notice or ask your provider for the simple rate change.</p>
+      <p><a href="/">Check a credit card statement PDF</a> or <a href="/guides/credit-card-apr-and-interest-charged.html">see where to find your rate and interest charge</a>.</p>
+
+      <h2>Sources</h2>
+      <ul>
+        <li><a href="https://www.bankofengland.co.uk/monetary-policy-summary-and-minutes/2026/november-2026">Bank of England’s November 2026 decision</a></li>
+        <li><a href="https://www.halifax.co.uk/creditcards/existing-customers/base-rate-information.html">Halifax’s explanation of linked rates and promotions</a></li>
+        <li><a href="https://www.moneyhelper.org.uk/en/everyday-money/credit/simple-guide-to-credit-cards">MoneyHelper’s guide to credit card statements and interest</a></li>
+      </ul>
+    </article>
+  </main>
+</div>
+</body>
+</html>
