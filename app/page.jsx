@@ -271,7 +271,10 @@ export default function Home() {
                 <p>If bills or credit card payments are becoming hard to manage, you can get free, confidential and independent debt advice.</p>
               </div>
               <a className="report-button" href="https://www.gov.uk/debt-advice">
-                Find free debt advice on GOV.UK <span aria-hidden="true">↗</span>
+                Find free debt advice on GOV.UK
+                <svg aria-hidden="true" focusable="false" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M13 5h6v6m0-6-9 9M19 14v5H5V5h5" />
+                </svg>
               </a>
             </section>
           </div>
